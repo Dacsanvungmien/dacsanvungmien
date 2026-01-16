@@ -162,6 +162,14 @@
             text-align: center; padding: 20px;
             font-size: 11px;
         }
+        /* Thêm vào trong thẻ <style> */
+        .p-price {
+            color: #d32f2f; /* Màu đỏ */
+            font-weight: bold;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 4px;
+        }
     </style>
 </head>
 <body>
@@ -181,43 +189,106 @@
         </div>
     </div>
 
-    <h3 style="text-align:center; color: var(--primary-color); margin-bottom: 20px;">Sản Phẩm Nổi Bật</h3>
+    <h3 style="text-align:center; color: var(--primary-color); margin-bottom: 20px; text-transform: uppercase;">
+        🔥 Top 10 Đặc Sản Bán Chạy
+    </h3>
+    
     <div class="products-grid">
         
-        <a href="san-pham-chuc.html" class="product-card">
-            <img src="https://images.unsplash.com/photo-1596521952865-c2777033503d?auto=format&fit=crop&w=300&q=80" class="p-img" alt="Trái Chúc">
+        <a href="https://zalo.me/sdt_cua_ban" class="product-card">
+            <img src="https://via.placeholder.com/300x300?text=SP+1" class="p-img" alt="Tên SP 1">
             <div class="p-info">
-                <span class="p-name">Dòng SP từ Cây Chúc</span>
-                <span class="p-btn">Xem chi tiết <i class="fas fa-arrow-right"></i></span>
+                <span class="p-name">Mắm Cá Linh Xay</span>
+                <span class="p-price">55.000đ</span>
+                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
             </div>
         </a>
 
-        <a href="san-pham-thot-not.html" class="product-card">
-            <img src="https://images.unsplash.com/photo-1543840939-2a955743a6d7?auto=format&fit=crop&w=300&q=80" class="p-img" alt="Đường Thốt Nốt">
+        <a href="https://zalo.me/sdt_cua_ban" class="product-card">
+            <img src="https://via.placeholder.com/300x300?text=SP+2" class="p-img" alt="Tên SP 2">
             <div class="p-info">
-                <span class="p-name">Đặc sản Thốt Nốt</span>
-                <span class="p-btn">Xem chi tiết <i class="fas fa-arrow-right"></i></span>
+                <span class="p-name">Đường Thốt Nốt (Hũ)</span>
+                <span class="p-price">35.000đ</span>
+                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
             </div>
         </a>
 
-        <a href="san-pham-mam.html" class="product-card">
-            <img src="https://example.com/anh-mam.jpg" class="p-img" alt="Mắm Châu Đốc" style="background: #ddd;">
+        <a href="#" class="product-card">
+            <img src="https://via.placeholder.com/300x300?text=SP+3" class="p-img" alt="SP 3">
             <div class="p-info">
-                <span class="p-name">Mắm & Khô các loại</span>
-                <span class="p-btn">Xem chi tiết <i class="fas fa-arrow-right"></i></span>
+                <span class="p-name">Khô Cá Lóc Cửng</span>
+                <span class="p-price">250.000đ/kg</span>
+                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
             </div>
         </a>
 
-        <a href="menu-tong.html" class="product-card" style="background: var(--primary-color); color: white;">
-            <div style="height: 120px; display: flex; align-items: center; justify-content: center; font-size: 40px;">
-                <i class="fas fa-list-ul"></i>
-            </div>
+        <a href="#" class="product-card">
+            <img src="https://via.placeholder.com/300x300?text=SP+4" class="p-img" alt="SP 4">
             <div class="p-info">
-                <span class="p-name" style="color:white">Toàn bộ Menu</span>
-                <span class="p-btn" style="color:rgba(255,255,255,0.8)">Xem ngay</span>
+                <span class="p-name">Tinh Dầu Chúc</span>
+                <span class="p-price">120.000đ</span>
+                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
             </div>
         </a>
 
+        <a href="#" class="product-card">
+            <img src="https://via.placeholder.com/300x300?text=SP+5" class="p-img" alt="SP 5">
+            <div class="p-info">
+                <span class="p-name">Mắm Thái Châu Đốc</span>
+                <span class="p-price">80.000đ</span>
+                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
+            </div>
+        </a>
+
+        <a href="#" class="product-card">
+            <img src="https://via.placeholder.com/300x300?text=SP+6" class="p-img" alt="SP 6">
+            <div class="p-info">
+                <span class="p-name">Me Thái Ngọt</span>
+                <span class="p-price">45.000đ</span>
+                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
+            </div>
+        </a>
+
+        <a href="#" class="product-card">
+            <img src="https://via.placeholder.com/300x300?text=SP+7" class="p-img" alt="SP 7">
+            <div class="p-info">
+                <span class="p-name">Nước Màu Thốt Nốt</span>
+                <span class="p-price">20.000đ</span>
+                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
+            </div>
+        </a>
+
+        <a href="#" class="product-card">
+            <img src="https://via.placeholder.com/300x300?text=SP+8" class="p-img" alt="SP 8">
+            <div class="p-info">
+                <span class="p-name">Khô Nhái (Vũ Nữ)</span>
+                <span class="p-price">450.000đ/kg</span>
+                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
+            </div>
+        </a>
+
+        <a href="#" class="product-card">
+            <img src="https://via.placeholder.com/300x300?text=SP+9" class="p-img" alt="SP 9">
+            <div class="p-info">
+                <span class="p-name">Tung Lò Mò (Bò)</span>
+                <span class="p-price">180.000đ</span>
+                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
+            </div>
+        </a>
+
+        <a href="#" class="product-card">
+            <img src="https://via.placeholder.com/300x300?text=SP+10" class="p-img" alt="SP 10">
+            <div class="p-info">
+                <span class="p-name">Trái Chúc Tươi</span>
+                <span class="p-price">80.000đ/kg</span>
+                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
+            </div>
+        </a>
+
+    </div>
+    
+    <div style="text-align:center; margin-bottom:30px;">
+        <a href="menu-tong.html" style="font-size:13px; text-decoration:underline; color:#666;">Xem tất cả sản phẩm khác >></a>
     </div>
 
     <div class="story-section">
