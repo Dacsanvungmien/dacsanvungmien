@@ -35,7 +35,7 @@ function buyNow(productName) {
     
     // Tạo link Zalo (Mở app hoặc web)
     // Lưu ý: Zalo Web đôi khi chặn deep link, nhưng mobile thì OK.
-    const zaloUrl = `https://zalo.me/${0917170209}?text=${encodeURIComponent(message)}`;
+    const zaloUrl = `https://zalo.me/${PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
     
     // Mở tab mới
     window.open(zaloUrl, '_blank');
