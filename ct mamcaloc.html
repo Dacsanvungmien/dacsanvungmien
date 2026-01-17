@@ -159,6 +159,34 @@
             // Ở đây sau này bạn có thể viết thêm code lưu vào LocalStorage nếu muốn làm giỏ hàng thật
         }
     </script>
+    <div class="bottom-bar">
+        <a href="javascript:void(0)" onclick="addCurrentProduct()" class="btn btn-cart">
+            <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+        </a>
 
+        <a href="javascript:void(0)" onclick="buyNow('Mắm Cá Linh Xay')" class="btn btn-buy">
+            <i class="fas fa-check-circle"></i> Đặt Mua Ngay
+        </a>
+    </div>
+
+    <div id="toast"></div>
+
+    <script src="main.js"></script>
+
+    <script>
+        // Định nghĩa thông tin của sản phẩm hiện tại
+        function addCurrentProduct() {
+            const product = {
+                id: 'mam-ca-linh',          // ID phải là duy nhất (không dấu, không cách)
+                name: 'Mắm Cá Linh Xay',    // Tên hiển thị
+                price: 55000,               // Giá (số nguyên)
+                image: 'images/mam-ca-linh.jpg', // Link ảnh để hiện trong giỏ
+                url: 'mam-ca-linh.html'     // Link quay lại trang này
+            };
+            
+            // Gọi hàm bên main.js
+            addToCart(product);
+        }
+    </script>
 </body>
 </html>
