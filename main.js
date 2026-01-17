@@ -1,8 +1,9 @@
-// main.js - Phiên bản nâng cấp
+// main.js - Phiên bản Tự động đồng bộ Realtime
 
-const PHONE_NUMBER = "0912345678"; // <--- THAY SỐ ZALO CỦA BẠN VÀO ĐÂY
+const PHONE_NUMBER = "0912345678"; // Thay số Zalo của bạn (bỏ số 0 đầu, ví dụ 849...)
 
-// 1. THÊM VÀO GIỎ
+// --- 1. CÁC HÀM XỬ LÝ CHÍNH ---
+
 function addToCart(product) {
     let cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
     let existingItem = cart.find(item => item.id === product.id);
@@ -15,35 +16,15 @@ function addToCart(product) {
     }
 
     localStorage.setItem('shop_giohang', JSON.stringify(cart));
-    
-    // Hiển thị thông báo
     showToast(`✅ Đã thêm ${product.name} vào giỏ!`);
-    
-    // Cập nhật số trên icon ngay lập tức
-    updateCartCount();
+    updateCartCount(); // Cập nhật ngay
 }
 
-// 2. MUA NGAY (1 MÓN)
 function buyNow(productName) {
     const message = `Chào Shop, tôi muốn mua nhanh món: ${productName}. Tư vấn giúp tôi nhé!`;
     window.open(`https://zalo.me/${PHONE_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
 }
 
-// 3. CẬP NHẬT SỐ LƯỢNG TRÊN ICON GIỎ HÀNG
-function updateCartCount() {
-    let cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
-    let total = cart.reduce((sum, item) => sum + item.quantity, 0);
-    
-    // Tìm cái icon giỏ hàng để sửa số
-    let badge = document.getElementById("cart-count");
-    if (badge) {
-        badge.innerText = total;
-        // Nếu giỏ hàng trống thì ẩn số 0 đi cho đẹp
-        badge.style.display = total > 0 ? 'flex' : 'none';
-    }
-}
-
-// 4. HIỂN THỊ THÔNG BÁO (TOAST)
 function showToast(message) {
     let toast = document.getElementById("toast");
     if (!toast) {
@@ -56,26 +37,48 @@ function showToast(message) {
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
 }
 
-// 1. Chạy khi trang tải xong (Lần đầu vào)
-document.addEventListener("DOMContentLoaded", function() {
+// --- 2. HÀM CẬP NHẬT SỐ LƯỢNG (QUAN TRỌNG NHẤT) ---
+function updateCartCount() {
+    // Luôn đọc dữ liệu mới nhất từ bộ nhớ
+    let cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
+    let total = cart.reduce((sum, item) => sum + item.quantity, 0);
+    
+    // Tìm icon giỏ hàng
+    let badge = document.getElementById("cart-count");
+    if (badge) {
+        badge.innerText = total;
+        // Logic ẩn/hiện: Nếu 0 thì ẩn, lớn hơn 0 thì hiện
+        if (total > 0) {
+            badge.style.display = 'flex';
+        } else {
+            badge.style.display = 'none'; // Ẩn đi nếu giỏ trống
+        }
+    }
+}
+
+// --- 3. CÁC "CẢM BIẾN" TỰ ĐỘNG CHẠY ---
+
+// Cảm biến 1: Khi trang vừa tải xong
+document.addEventListener("DOMContentLoaded", updateCartCount);
+
+// Cảm biến 2: Khi người dùng bấm nút BACK (Quay lại từ trang khác)
+window.addEventListener("pageshow", function(event) {
     updateCartCount();
 });
 
-// 2. Chạy khi người dùng bấm nút Back/Forward (Xử lý Cache)
-window.addEventListener("pageshow", function(event) {
-    // Nếu trang được load từ cache (lịch sử duyệt web) thì cập nhật lại giỏ
-    if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
-        updateCartCount();
-    } else {
-        // Cứ chạy cập nhật cho chắc ăn trong mọi trường hợp
+// Cảm biến 3: Khi người dùng chuyển Tab rồi quay lại (Tab Focus)
+window.addEventListener("visibilitychange", function() {
+    if (!document.hidden) {
         updateCartCount();
     }
 });
 
-// 3. (Nâng cao) Đồng bộ giữa các Tab 
-// (Ví dụ: Mở 2 tab, tab này thêm giỏ thì tab kia tự nhảy số luôn không cần F5)
+// Cảm biến 4: Đồng bộ giữa các Tab (Ví dụ mở 2 tab cùng lúc)
 window.addEventListener('storage', function(event) {
     if (event.key === 'shop_giohang') {
         updateCartCount();
     }
 });
+
+// Cảm biến 5: Khi cửa sổ được active lại (An toàn tuyệt đối)
+window.addEventListener("focus", updateCartCount);
