@@ -56,7 +56,26 @@ function showToast(message) {
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
 }
 
-// Tự động chạy khi tải trang để hiện số lượng giỏ hàng cũ
+// 1. Chạy khi trang tải xong (Lần đầu vào)
 document.addEventListener("DOMContentLoaded", function() {
     updateCartCount();
+});
+
+// 2. Chạy khi người dùng bấm nút Back/Forward (Xử lý Cache)
+window.addEventListener("pageshow", function(event) {
+    // Nếu trang được load từ cache (lịch sử duyệt web) thì cập nhật lại giỏ
+    if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+        updateCartCount();
+    } else {
+        // Cứ chạy cập nhật cho chắc ăn trong mọi trường hợp
+        updateCartCount();
+    }
+});
+
+// 3. (Nâng cao) Đồng bộ giữa các Tab 
+// (Ví dụ: Mở 2 tab, tab này thêm giỏ thì tab kia tự nhảy số luôn không cần F5)
+window.addEventListener('storage', function(event) {
+    if (event.key === 'shop_giohang') {
+        updateCartCount();
+    }
 });
