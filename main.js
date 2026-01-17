@@ -1,7 +1,7 @@
 // main.js - File xử lý giỏ hàng chung
 
 // 1. CẤU HÌNH THÔNG TIN CHỦ SHOP
-const PHONE_NUMBER = "0912345678"; // Thay số Zalo của bạn vào đây (bỏ số 0 đầu nếu cần theo format quốc tế)
+const PHONE_NUMBER = "0917170209"; // Thay số Zalo của bạn vào đây (bỏ số 0 đầu nếu cần theo format quốc tế)
 
 // 2. HÀM THÊM VÀO GIỎ HÀNG (Lưu vào LocalStorage)
 function addToCart(product) {
@@ -35,7 +35,7 @@ function buyNow(productName) {
     
     // Tạo link Zalo (Mở app hoặc web)
     // Lưu ý: Zalo Web đôi khi chặn deep link, nhưng mobile thì OK.
-    const zaloUrl = `https://zalo.me/${PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
+    const zaloUrl = `https://zalo.me/${0917170209}?text=${encodeURIComponent(message)}`;
     
     // Mở tab mới
     window.open(zaloUrl, '_blank');
