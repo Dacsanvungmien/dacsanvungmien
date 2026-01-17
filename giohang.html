@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng Của Bạn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background: #f9fbf9; margin: 0; padding: 20px; }
+        .cart-title { text-align: center; color: #2e7d32; }
+        .cart-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .cart-img { width: 60px; height: 60px; border-radius: 5px; object-fit: cover; margin-right: 15px; }
+        .cart-info { flex: 1; }
+        .item-name { font-weight: bold; font-size: 14px; display: block; }
+        .item-price { color: #d32f2f; font-size: 13px; }
+        .btn-remove { color: #999; cursor: pointer; padding: 5px; }
+        
+        .total-section { background: white; padding: 20px; border-radius: 10px; margin-top: 20px; text-align: center; }
+        .total-price { font-size: 24px; color: #d32f2f; font-weight: bold; display: block; margin: 10px 0; }
+        
+        .btn-checkout { 
+            background: #0068FF; color: white; 
+            padding: 15px; width: 100%; display: block; 
+            text-align: center; text-decoration: none; 
+            border-radius: 8px; font-weight: bold; box-sizing: border-box;
+        }
+        .btn-back { display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 14px;}
+    </style>
+</head>
+<body>
+
+    <h2 class="cart-title">Giỏ Hàng</h2>
+
+    <div id="cart-list">
+        <p style="text-align:center">Giỏ hàng đang trống...</p>
+    </div>
+
+    <div class="total-section" id="checkout-section" style="display:none">
+        <span>Tổng cộng:</span>
+        <span class="total-price" id="total-price">0đ</span>
+        
+        <a href="javascript:void(0)" onclick="checkoutZalo()" class="btn-checkout">
+            <i class="fas fa-paper-plane"></i> Gửi đơn hàng qua Zalo
+        </a>
+    </div>
+
+    <a href="index.html" class="btn-back">← Quay lại mua tiếp</a>
+
+    <script src="main.js"></script>
+    <script>
+        // Load giỏ hàng khi vào trang
+        const cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
+        const container = document.getElementById('cart-list');
+        const checkoutSec = document.getElementById('checkout-section');
+        const totalLabel = document.getElementById('total-price');
+
+        if (cart.length > 0) {
+            container.innerHTML = ''; // Xóa dòng "trống"
+            checkoutSec.style.display = 'block'; // Hiện nút thanh toán
+            
+            let totalPrice = 0;
+
+            cart.forEach((item, index) => {
+                totalPrice += item.price * item.quantity;
+                
+                // HTML cho từng dòng sản phẩm
+                const html = `
+                    <div class="cart-item">
+                        <img src="${item.image}" class="cart-img">
+                        <div class="cart-info">
+                            <span class="item-name">${item.name}</span>
+                            <span class="item-price">${item.price.toLocaleString()}đ x ${item.quantity}</span>
+                        </div>
+                        <div class="btn-remove" onclick="removeItem(${index})">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+            
+            totalLabel.innerText = totalPrice.toLocaleString() + 'đ';
+        }
+
+        // Hàm xóa sản phẩm
+        function removeItem(index) {
+            cart.splice(index, 1); // Xóa khỏi mảng
+            localStorage.setItem('shop_giohang', JSON.stringify(cart)); // Lưu lại
+            location.reload(); // Tải lại trang
+        }
+
+        // Hàm Chốt đơn (Gom tin nhắn gửi Zalo)
+        function checkoutZalo() {
+            let msg = "Chào Shop, tôi muốn đặt các món sau:\n";
+            let total = 0;
+            
+            cart.forEach(item => {
+                msg += `- ${item.name} (SL: ${item.quantity})\n`;
+                total += item.price * item.quantity;
+            });
+            
+            msg += `\nTổng tiền: ${total.toLocaleString()}đ.\nShop giao hàng cho tôi nhé!`;
+            
+            // Gửi qua Zalo
+            window.open(`https://zalo.me/${PHONE_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
