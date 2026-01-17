@@ -1,67 +1,62 @@
-// main.js - File xử lý giỏ hàng chung
+// main.js - Phiên bản nâng cấp
 
-// 1. CẤU HÌNH THÔNG TIN CHỦ SHOP
-const PHONE_NUMBER = "0917170209"; // Thay số Zalo của bạn vào đây (bỏ số 0 đầu nếu cần theo format quốc tế)
+const PHONE_NUMBER = "0912345678"; // <--- THAY SỐ ZALO CỦA BẠN VÀO ĐÂY
 
-// 2. HÀM THÊM VÀO GIỎ HÀNG (Lưu vào LocalStorage)
+// 1. THÊM VÀO GIỎ
 function addToCart(product) {
-    // Lấy giỏ hàng cũ từ bộ nhớ (nếu có)
     let cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
-    
-    // Kiểm tra xem món này đã có trong giỏ chưa
     let existingItem = cart.find(item => item.id === product.id);
     
     if (existingItem) {
-        existingItem.quantity += 1; // Nếu có rồi thì tăng số lượng
+        existingItem.quantity += 1;
     } else {
-        product.quantity = 1; // Nếu chưa có thì thêm mới với số lượng 1
+        product.quantity = 1;
         cart.push(product);
     }
 
-    // Lưu ngược lại vào bộ nhớ
     localStorage.setItem('shop_giohang', JSON.stringify(cart));
     
-    // Hiển thị thông báo (Toast)
+    // Hiển thị thông báo
     showToast(`✅ Đã thêm ${product.name} vào giỏ!`);
     
-    // Cập nhật số lượng trên icon giỏ hàng (nếu bạn có làm icon giỏ hàng trên menu)
+    // Cập nhật số trên icon ngay lập tức
     updateCartCount();
 }
 
-// 3. HÀM MUA NGAY (Chuyển hướng sang Zalo với nội dung soạn sẵn)
+// 2. MUA NGAY (1 MÓN)
 function buyNow(productName) {
-    // Tạo nội dung tin nhắn mẫu
-    const message = `Chào Shop, tôi muốn đặt mua ngay món: ${productName}. Tư vấn giúp tôi nhé!`;
-    
-    // Tạo link Zalo (Mở app hoặc web)
-    // Lưu ý: Zalo Web đôi khi chặn deep link, nhưng mobile thì OK.
-    const zaloUrl = `https://zalo.me/${PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
-    
-    // Mở tab mới
-    window.open(zaloUrl, '_blank');
+    const message = `Chào Shop, tôi muốn mua nhanh món: ${productName}. Tư vấn giúp tôi nhé!`;
+    window.open(`https://zalo.me/${PHONE_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
 }
 
-// 4. HÀM HIỂN THỊ THÔNG BÁO (Toast)
+// 3. CẬP NHẬT SỐ LƯỢNG TRÊN ICON GIỎ HÀNG
+function updateCartCount() {
+    let cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
+    let total = cart.reduce((sum, item) => sum + item.quantity, 0);
+    
+    // Tìm cái icon giỏ hàng để sửa số
+    let badge = document.getElementById("cart-count");
+    if (badge) {
+        badge.innerText = total;
+        // Nếu giỏ hàng trống thì ẩn số 0 đi cho đẹp
+        badge.style.display = total > 0 ? 'flex' : 'none';
+    }
+}
+
+// 4. HIỂN THỊ THÔNG BÁO (TOAST)
 function showToast(message) {
-    // Tạo thẻ div thông báo nếu chưa có
     let toast = document.getElementById("toast");
     if (!toast) {
         toast = document.createElement("div");
         toast.id = "toast";
         document.body.appendChild(toast);
     }
-    
     toast.innerText = message;
     toast.className = "show";
-    
-    // Ẩn sau 3 giây
-    setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+    setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
 }
 
-// 5. CẬP NHẬT SỐ LƯỢNG (Để hiển thị chấm đỏ trên icon giỏ hàng - Nâng cao)
-function updateCartCount() {
-    let cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
-    let total = cart.reduce((sum, item) => sum + item.quantity, 0);
-    console.log("Tổng số lượng trong giỏ:", total);
-    // Sau này bạn có thể gán số này vào một thẻ span trên header
-}
+// Tự động chạy khi tải trang để hiện số lượng giỏ hàng cũ
+document.addEventListener("DOMContentLoaded", function() {
+    updateCartCount();
+});
