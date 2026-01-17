@@ -7,73 +7,126 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background: #f9fbf9; margin: 0; padding: 20px; }
-        .cart-title { text-align: center; color: #2e7d32; }
-        .cart-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .cart-img { width: 60px; height: 60px; border-radius: 5px; object-fit: cover; margin-right: 15px; }
-        .cart-info { flex: 1; }
-        .item-name { font-weight: bold; font-size: 14px; display: block; }
-        .item-price { color: #d32f2f; font-size: 13px; }
-        .btn-remove { color: #999; cursor: pointer; padding: 5px; }
+        body { font-family: 'Montserrat', sans-serif; background: #f9fbf9; margin: 0; padding: 20px; padding-bottom: 100px; }
         
-        .total-section { background: white; padding: 20px; border-radius: 10px; margin-top: 20px; text-align: center; }
-        .total-price { font-size: 24px; color: #d32f2f; font-weight: bold; display: block; margin: 10px 0; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .cart-title { color: #2e7d32; margin: 0; font-size: 20px; }
+        .home-link { text-decoration: none; color: #333; font-size: 14px; display: flex; align-items: center; }
+
+        /* Khung từng sản phẩm */
+        .cart-item { 
+            background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; 
+            display: flex; align-items: center; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+        }
+        .cart-img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; margin-right: 15px; }
+        .cart-info { flex: 1; }
+        .item-name { font-weight: bold; font-size: 15px; display: block; margin-bottom: 5px; color: #333; }
+        .item-price { color: #d32f2f; font-weight: bold; font-size: 14px; }
+
+        /* BỘ NÚT TĂNG GIẢM SỐ LƯỢNG (CSS MỚI) */
+        .qty-control {
+            display: flex; align-items: center;
+            background: #f0f2f5; border-radius: 20px;
+            padding: 2px;
+        }
+        .btn-qty {
+            width: 28px; height: 28px; border: none;
+            background: white; border-radius: 50%;
+            font-weight: bold; color: #2e7d32; cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .btn-qty:active { transform: scale(0.9); background: #eee; }
+        .qty-num {
+            width: 30px; text-align: center; font-size: 14px; font-weight: bold; color: #333;
+        }
+
+        /* Phần tổng tiền cố định dưới đáy */
+        .checkout-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: white; padding: 15px 20px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+            box-sizing: border-box; border-top-left-radius: 20px; border-top-right-radius: 20px;
+        }
+        .total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .total-label { font-size: 14px; color: #666; }
+        .total-price { font-size: 20px; color: #d32f2f; font-weight: bold; }
         
         .btn-checkout { 
             background: #0068FF; color: white; 
-            padding: 15px; width: 100%; display: block; 
+            padding: 14px; width: 100%; display: block; 
             text-align: center; text-decoration: none; 
-            border-radius: 8px; font-weight: bold; box-sizing: border-box;
+            border-radius: 10px; font-weight: bold; font-size: 15px;
+            box-shadow: 0 4px 10px rgba(0,104,255,0.3);
         }
-        .btn-back { display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 14px;}
     </style>
 </head>
 <body>
 
-    <h2 class="cart-title">Giỏ Hàng</h2>
-
-    <div id="cart-list">
-        <p style="text-align:center">Giỏ hàng đang trống...</p>
+    <div class="header">
+        <a href="index.html" class="home-link"><i class="fas fa-arrow-left"></i> Mua thêm món khác</a>
+        <h2 class="cart-title">Giỏ Hàng</h2>
     </div>
 
-    <div class="total-section" id="checkout-section" style="display:none">
-        <span>Tổng cộng:</span>
-        <span class="total-price" id="total-price">0đ</span>
+    <div id="cart-list">
+        </div>
+
+    <div class="checkout-bar" id="checkout-section" style="display:none">
+        <div class="total-row">
+            <span class="total-label">Tổng thanh toán:</span>
+            <span class="total-price" id="total-price">0đ</span>
+        </div>
         
         <a href="javascript:void(0)" onclick="checkoutZalo()" class="btn-checkout">
             <i class="fas fa-paper-plane"></i> Gửi đơn hàng qua Zalo
         </a>
     </div>
 
-    <a href="index.html" class="btn-back">← Quay lại mua tiếp</a>
-
     <script src="main.js"></script>
     <script>
-        // Load giỏ hàng khi vào trang
-        const cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
+        // Lấy giỏ hàng từ bộ nhớ
+        let cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
+        
         const container = document.getElementById('cart-list');
         const checkoutSec = document.getElementById('checkout-section');
         const totalLabel = document.getElementById('total-price');
 
-        if (cart.length > 0) {
-            container.innerHTML = ''; // Xóa dòng "trống"
-            checkoutSec.style.display = 'block'; // Hiện nút thanh toán
-            
+        // Hàm vẽ lại giỏ hàng (Chạy khi load trang hoặc khi thay đổi số lượng)
+        function renderCart() {
+            container.innerHTML = ''; // Xóa trắng danh sách cũ
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; margin-top:50px; color:#999;">
+                        <i class="fas fa-shopping-basket" style="font-size:50px; margin-bottom:15px; display:block;"></i>
+                        Giỏ hàng đang trống trơn.<br>
+                        <a href="index.html" style="color:#2e7d32; font-weight:bold; margin-top:10px; display:inline-block;">Đi chợ ngay</a>
+                    </div>
+                `;
+                checkoutSec.style.display = 'none'; // Ẩn thanh toán
+                return;
+            }
+
+            checkoutSec.style.display = 'block'; // Hiện thanh toán
             let totalPrice = 0;
 
             cart.forEach((item, index) => {
                 totalPrice += item.price * item.quantity;
                 
-                // HTML cho từng dòng sản phẩm
+                // HTML cho bộ nút tăng giảm
                 const html = `
                     <div class="cart-item">
-                        <img src="${item.image}" class="cart-img">
+                        <img src="${item.image}" class="cart-img" onerror="this.src='https://via.placeholder.com/70'">
                         <div class="cart-info">
                             <span class="item-name">${item.name}</span>
-                            <span class="item-price">${item.price.toLocaleString()}đ x ${item.quantity}</span>
+                            <span class="item-price">${item.price.toLocaleString()}đ</span>
                         </div>
-                        <div class="btn-remove" onclick="removeItem(${index})">
-                            <i class="fas fa-trash"></i>
+                        
+                        <div class="qty-control">
+                            <button class="btn-qty" onclick="changeQty(${index}, -1)"><i class="fas fa-minus" style="font-size:10px"></i></button>
+                            <span class="qty-num">${item.quantity}</span>
+                            <button class="btn-qty" onclick="changeQty(${index}, 1)"><i class="fas fa-plus" style="font-size:10px"></i></button>
                         </div>
                     </div>
                 `;
@@ -81,17 +134,30 @@
             });
             
             totalLabel.innerText = totalPrice.toLocaleString() + 'đ';
+            
+            // Cập nhật lại localStorage để đồng bộ
+            localStorage.setItem('shop_giohang', JSON.stringify(cart));
         }
 
-        // Hàm xóa sản phẩm
-        function removeItem(index) {
-            cart.splice(index, 1); // Xóa khỏi mảng
-            localStorage.setItem('shop_giohang', JSON.stringify(cart)); // Lưu lại
-            location.reload(); // Tải lại trang
+        // --- HÀM XỬ LÝ TĂNG GIẢM ---
+        function changeQty(index, delta) {
+            // delta = 1 (Tăng) hoặc -1 (Giảm)
+            cart[index].quantity += delta;
+
+            // Nếu số lượng <= 0 thì hỏi xóa
+            if (cart[index].quantity <= 0) {
+                // Xóa luôn không cần hỏi (để thao tác nhanh)
+                cart.splice(index, 1);
+            }
+
+            // Vẽ lại giao diện ngay lập tức
+            renderCart();
         }
 
-        // Hàm Chốt đơn (Gom tin nhắn gửi Zalo)
+        // --- HÀM CHỐT ĐƠN ---
         function checkoutZalo() {
+            if (cart.length === 0) return;
+
             let msg = "Chào Shop, tôi muốn đặt các món sau:\n";
             let total = 0;
             
@@ -100,11 +166,18 @@
                 total += item.price * item.quantity;
             });
             
-            msg += `\nTổng tiền: ${total.toLocaleString()}đ.\nShop giao hàng cho tôi nhé!`;
+            msg += `\n💰 Tổng tiền: ${total.toLocaleString()}đ.\n📍 Shop giao hàng cho tôi theo địa chỉ này nhé!`;
             
-            // Gửi qua Zalo
-            window.open(`https://zalo.me/${PHONE_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+            // Mở Zalo (Biến PHONE_NUMBER lấy từ file main.js)
+            // Lưu ý: Nếu main.js chưa load kịp biến PHONE_NUMBER, hãy đảm bảo main.js được nhúng đúng.
+            // Để chắc ăn, bạn có thể hardcode số điện thoại ở đây nếu muốn.
+            const sdt = typeof PHONE_NUMBER !== 'undefined' ? PHONE_NUMBER : '0912345678'; 
+            
+            window.open(`https://zalo.me/${sdt}?text=${encodeURIComponent(msg)}`, '_blank');
         }
+
+        // Chạy lần đầu khi vào trang
+        renderCart();
     </script>
 </body>
 </html>
