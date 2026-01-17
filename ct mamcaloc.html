@@ -85,7 +85,80 @@
         .btn:active { transform: scale(0.98); }
         .btn i { margin-bottom: 3px; font-size: 18px; }
 
-        /*
+        /* Thông báo nhỏ khi bấm thêm vào giỏ */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 5px; padding: 16px; position: fixed; z-index: 999; left: 50%; bottom: 80px; transform: translateX(-50%); font-size: 14px; opacity: 0; transition: opacity 0.5s, bottom 0.5s;
+        }
+        #toast.show { visibility: visible; opacity: 1; bottom: 90px; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+
+    <div class="gallery-container">
+        
+        <div class="gallery-item">
+            <img src="images/mam-ca-linh.jpg" class="gallery-img" alt="Mắm cá linh 1">
+            <div class="img-counter">1/3</div>
+        </div>
+
+        <div class="gallery-item">
+            <img src="images/mam-thai.jpg" class="gallery-img" alt="Mắm cá linh 2">
+            <div class="img-counter">2/3</div>
+        </div>
+
+        <div class="gallery-item">
+            <img src="images/kho-loc.jpg" class="gallery-img" alt="Mắm cá linh 3">
+            <div class="img-counter">3/3</div>
+        </div>
+
+    </div>
+
+    <div class="content">
+        <span class="p-cat">Đặc sản Châu Đốc</span>
+        <h1 class="p-title">Mắm Cá Linh Xay Nguyên Chất (Hũ 500g)</h1>
+        
+        <div style="display:flex; align-items:center;">
+            <span class="p-price">55.000đ</span>
+            <span class="p-old-price">65.000đ</span>
+        </div>
+        
+        <hr class="divider">
+
+        <span class="desc-title">Mô tả sản phẩm:</span>
+        <div class="p-desc">
+            <p>🐟 <b>Thành phần:</b> Cá linh đồng mùa nước nổi, đường thốt nốt, thính gạo rang thơm lừng.</p>
+            <p>🍲 <b>Cách dùng:</b> Dùng để chưng với thịt ba rọi, trứng, hoặc nấu lẩu mắm miền Tây cực bén mồi.</p>
+            <p>✅ <b>Cam kết:</b> Không dùng phẩm màu, không chất bảo quản. Đảm bảo vệ sinh an toàn thực phẩm.</p>
+            <p>📦 <b>Quy cách:</b> Hũ nhựa PET 500g, nắp nhôm kín đáo, dễ vận chuyển đi xa.</p>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <a href="javascript:void(0)" onclick="addToCart()" class="btn btn-cart">
+            <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+        </a>
+
+        <a href="https://zalo.me/sdt_cua_ban" class="btn btn-buy">
+            <i class="fas fa-check-circle"></i> Đặt Mua Ngay
+        </a>
+    </div>
+
+    <div id="toast">✅ Đã thêm sản phẩm vào giỏ hàng!</div>
+
+    <script>
+        function addToCart() {
+            // Hiện thông báo
+            var x = document.getElementById("toast");
+            x.className = "show";
+            
+            // Ẩn sau 3 giây
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            
+            // Ở đây sau này bạn có thể viết thêm code lưu vào LocalStorage nếu muốn làm giỏ hàng thật
+        }
+    </script>
 
 </body>
 </html>
