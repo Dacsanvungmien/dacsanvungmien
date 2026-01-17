@@ -139,19 +139,32 @@
             localStorage.setItem('shop_giohang', JSON.stringify(cart));
         }
 
-        // --- HÀM XỬ LÝ TĂNG GIẢM ---
+        // --- HÀM XỬ LÝ TĂNG GIẢM (BẢN SỬA LỖI) ---
         function changeQty(index, delta) {
-            // delta = 1 (Tăng) hoặc -1 (Giảm)
-            cart[index].quantity += delta;
+            // Bước 1: Ép kiểu dữ liệu về số nguyên cho chắc chắn
+            let currentQty = Number(cart[index].quantity);
+            let newQty = currentQty + delta;
 
-            // Nếu số lượng <= 0 thì hỏi xóa
-            if (cart[index].quantity <= 0) {
-                // Xóa luôn không cần hỏi (để thao tác nhanh)
+            // Bước 2: Kiểm tra logic
+            if (newQty <= 0) {
+                // Nếu về 0 hoặc âm -> Xóa luôn sản phẩm
                 cart.splice(index, 1);
+            } else {
+                // Nếu > 0 -> Cập nhật số lượng mới
+                cart[index].quantity = newQty;
             }
 
-            // Vẽ lại giao diện ngay lập tức
+            // Bước 3: Lưu lại vào bộ nhớ TRƯỚC khi vẽ lại
+            localStorage.setItem('shop_giohang', JSON.stringify(cart));
+
+            // Bước 4: Vẽ lại giao diện giỏ hàng
             renderCart();
+            
+            // Bước 5: Cập nhật luôn cái nút giỏ hàng nổi (nếu trang này có hiện)
+            // Kiểm tra xem hàm updateCartCount có tồn tại không rồi mới chạy để tránh lỗi
+            if (typeof updateCartCount === "function") {
+                updateCartCount();
+            }
         }
 
         // --- HÀM CHỐT ĐƠN ---
