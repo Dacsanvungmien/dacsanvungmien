@@ -1,4 +1,4 @@
-// main.js - PHIÊN BẢN V4.0 (ĐỒNG BỘ HÓA NỘI DUNG TUYỆT ĐỐI)
+// main.js - PHIÊN BẢN V5.0 (FIX LỖI MẤT CHỮ TRÊN PC)
 
 // 1. CẤU HÌNH SỐ ĐIỆN THOẠI
 const PHONE_NUMBER = "0949161132"; // Số Zalo của bạn
@@ -12,13 +12,13 @@ function formatZaloPhone(phone) {
     return cleanPhone;
 }
 
-// Hàm hỗ trợ: Copy nội dung (Code chuẩn)
+// Hàm hỗ trợ: Copy nội dung
 function copyToClipboard(text) {
     try {
         var textArea = document.createElement("textarea");
         textArea.value = text;
         textArea.style.position = "fixed";
-        textArea.style.left = "-9999px"; // Giấu textarea đi
+        textArea.style.left = "-9999px";
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
@@ -28,6 +28,21 @@ function copyToClipboard(text) {
     } catch (err) {
         console.error('Lỗi copy:', err);
         return false;
+    }
+}
+
+// Hàm hỗ trợ: Mở Zalo thông minh (Tách luồng Mobile/PC)
+function openZaloSmart(phone, message) {
+    var finalPhone = formatZaloPhone(phone);
+    var zaloUrl = "https://zalo.me/" + finalPhone + "?text=" + encodeURIComponent(message);
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        // Mobile: Chuyển hướng trực tiếp để kích hoạt App
+        window.location.href = zaloUrl;
+    } else {
+        // PC: Mở Tab mới để Zalo Web nhận được tin nhắn
+        window.open(zaloUrl, '_blank');
     }
 }
 
@@ -52,29 +67,22 @@ function addToCart(product) {
 // --- HÀM MUA NGAY (Trang chi tiết) ---
 function buyNow(productName, productPrice) {
     try {
-        // BƯỚC 1: SOẠN TIN NHẮN (CHỈ 1 LẦN DUY NHẤT TẠI ĐÂY)
+        // 1. Soạn tin
         var finalMsg = "Chào Shop, tôi muốn mua nhanh:\n";
         finalMsg += "- " + productName + " (SL: 1)\n";
-        
-        // Kiểm tra nếu có giá tiền thì thêm vào
         if (productPrice && productPrice > 0) {
             finalMsg += "\n💰 Tổng: " + productPrice.toLocaleString('vi-VN') + "đ.\n";
         }
         finalMsg += "📍 Tư vấn và giao hàng giúp tôi nhé!";
 
-        // BƯỚC 2: COPY NỘI DUNG VỪA SOẠN
+        // 2. Copy
         copyToClipboard(finalMsg);
 
-        // BƯỚC 3: MỞ ZALO VỚI CÙNG NỘI DUNG ĐÓ
-        var confirmText = "✅ Đã chép đơn hàng!\n\n👉 Trên ĐIỆN THOẠI: Vui lòng nhấn giữ ô chat và chọn DÁN (PASTE).\n👉 Trên MÁY TÍNH: Nội dung sẽ tự điền.\n\nBấm ĐỒNG Ý để mở Zalo ngay!";
+        // 3. Mở Zalo
+        var confirmText = "✅ Đã chép nội dung mua hàng!\n\n👉 Bấm OK để mở Zalo.\n👉 Nếu thấy ô chat trống, bạn nhớ DÁN (PASTE) nhé!";
         
         if (confirm(confirmText)) {
-            var finalPhone = formatZaloPhone(PHONE_NUMBER);
-            // Dùng encodeURIComponent để đảm bảo nội dung trên PC hiển thị đúng y hệt
-            var zaloUrl = "https://zalo.me/" + finalPhone + "?text=" + encodeURIComponent(finalMsg);
-            
-            // Chuyển hướng
-            window.location.href = zaloUrl;
+            openZaloSmart(PHONE_NUMBER, finalMsg);
         }
 
     } catch (e) {
@@ -92,12 +100,11 @@ function checkoutZalo() {
     }
 
     try {
-        // BƯỚC 1: SOẠN TIN NHẮN (CHỈ 1 LẦN DUY NHẤT TẠI ĐÂY)
+        // 1. Soạn tin
         var finalMsg = "Chào Shop, tôi muốn đặt đơn hàng:\n";
         let total = 0;
 
         cart.forEach(item => {
-            // Xử lý giá tiền cẩn thận
             let price = Number(item.price);
             let qty = Number(item.quantity);
             if (isNaN(price)) price = 0;
@@ -109,18 +116,14 @@ function checkoutZalo() {
 
         finalMsg += `\n💰 Tổng: ${total.toLocaleString('vi-VN')}đ.\n📍 Giao giúp tôi nhé!`;
 
-        // BƯỚC 2: COPY NỘI DUNG VỪA SOẠN
+        // 2. Copy
         copyToClipboard(finalMsg);
 
-        // BƯỚC 3: MỞ ZALO VỚI CÙNG NỘI DUNG ĐÓ
-        var confirmText = "✅ Đã chép đơn hàng!\n\n👉 Trên ĐIỆN THOẠI: Vui lòng nhấn giữ ô chat và chọn DÁN (PASTE).\n👉 Trên MÁY TÍNH: Nội dung sẽ tự điền.\n\nBấm ĐỒNG Ý để mở Zalo ngay!";
+        // 3. Mở Zalo
+        var confirmText = "✅ Đã chép đơn hàng!\n\n👉 Bấm OK để mở Zalo.\n👉 Nếu thấy ô chat trống, bạn nhớ DÁN (PASTE) nhé!";
 
         if (confirm(confirmText)) {
-            var finalPhone = formatZaloPhone(PHONE_NUMBER);
-            // Dùng encodeURIComponent để đảm bảo nội dung trên PC hiển thị đúng y hệt
-            var zaloUrl = "https://zalo.me/" + finalPhone + "?text=" + encodeURIComponent(finalMsg);
-            
-            window.location.href = zaloUrl;
+            openZaloSmart(PHONE_NUMBER, finalMsg);
         }
 
     } catch (e) {
