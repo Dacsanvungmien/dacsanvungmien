@@ -167,26 +167,33 @@
             }
         }
 
-        // --- HÀM CHỐT ĐƠN ---
+        // --- HÀM CHỐT ĐƠN (NÂNG CẤP) ---
         function checkoutZalo() {
             if (cart.length === 0) return;
 
-            let msg = "Chào Shop, tôi muốn đặt các món sau:\n";
+            // 1. Soạn nội dung tin nhắn
+            let msg = "Chào Shop, tôi muốn đặt đơn hàng gồm:\n";
             let total = 0;
             
             cart.forEach(item => {
+                // Dùng dấu gạch đầu dòng và xuống dòng rõ ràng
                 msg += `- ${item.name} (SL: ${item.quantity})\n`;
                 total += item.price * item.quantity;
             });
             
-            msg += `\n💰 Tổng tiền: ${total.toLocaleString()}đ.\n📍 Shop giao hàng cho tôi theo địa chỉ này nhé!`;
+            msg += `\n💰 Tổng tiền: ${total.toLocaleString()}đ.\n📍 Bạn giao hàng cho tôi nhé!`;
             
-            // Mở Zalo (Biến PHONE_NUMBER lấy từ file main.js)
-            // Lưu ý: Nếu main.js chưa load kịp biến PHONE_NUMBER, hãy đảm bảo main.js được nhúng đúng.
-            // Để chắc ăn, bạn có thể hardcode số điện thoại ở đây nếu muốn.
-            const sdt = typeof PHONE_NUMBER !== 'undefined' ? PHONE_NUMBER : '0912345678'; 
+            // 2. Xử lý số điện thoại (Lấy từ main.js hoặc hardcode)
+            // Đảm bảo biến PHONE_NUMBER đã được khai báo bên main.js
+            let phone = (typeof PHONE_NUMBER !== 'undefined') ? PHONE_NUMBER : '0912345678';
             
-            window.open(`https://zalo.me/${sdt}?text=${encodeURIComponent(msg)}`, '_blank');
+            // Chuyển 09xx thành 849xx
+            phone = phone.replace(/\D/g, ''); 
+            if (phone.startsWith('0')) phone = '84' + phone.slice(1);
+
+            // 3. Mở Zalo
+            // encodeURIComponent giúp biến đổi ký tự xuống dòng (\n) thành mã máy tính hiểu được
+            window.open(`https://zalo.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         // Chạy lần đầu khi vào trang
