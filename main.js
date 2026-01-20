@@ -29,21 +29,49 @@ function addToCart(product) {
     updateCartCount(); // Cập nhật ngay
 }
 
-// HÀM MUA NGAY (1 MÓN)
-function buyNow(productName) {
-    const message = `Chào Shop, tôi muốn mua nhanh món: ${productName}. Tư vấn giúp tôi nhé!`;
+// --- HÀM CHỐT ĐƠN (PHIÊN BẢN COPY-PASTE) ---
+function checkoutZalo() {
+    if (cart.length === 0) return;
+
+    // 1. Soạn tin nhắn
+    let msg = "Chào Shop, tôi muốn đặt đơn hàng:\n";
+    let total = 0;
+    cart.forEach(item => {
+        msg += `- ${item.name} (SL: ${item.quantity})\n`;
+        total += item.price * item.quantity;
+    });
+    msg += `\n💰 Tổng: ${total.toLocaleString()}đ.\n📍 Giao giúp tôi nhé!`;
     
-    // 1. Chuẩn hóa số điện thoại
-    const zaloPhone = formatZaloPhone(PHONE_NUMBER);
+    // 2. COPY VÀO BỘ NHỚ (Chìa khóa của vấn đề)
+    // Gọi hàm copyToClipboard (đảm bảo hàm này có trong main.js hoặc viết lại ở đây)
+    if (typeof copyToClipboard === "function") {
+        copyToClipboard(msg);
+    } else {
+        // Nếu chưa có hàm trong main.js thì chạy code copy thủ công tại chỗ
+        navigator.clipboard.writeText(msg).catch(err => console.log('Lỗi copy', err));
+    }
+
+    // 3. Xử lý số điện thoại
+    let phone = (typeof PHONE_NUMBER !== 'undefined') ? PHONE_NUMBER : '0912345678';
+    phone = phone.replace(/\D/g, ''); 
+    if (phone.startsWith('0')) phone = '84' + phone.slice(1);
+
+    // 4. Mở Zalo (Ưu tiên Deep Link trên Mobile)
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     
-    // 2. Mã hóa nội dung tin nhắn (quan trọng)
-    const encodedMsg = encodeURIComponent(message);
-    
-    // 3. Tạo link
-    const url = `https://zalo.me/${zaloPhone}?text=${encodedMsg}`;
-    
-    // 4. Mở tab mới
-    window.open(url, '_blank');
+    if (isMobile) {
+        // Thử mở App trực tiếp
+        window.location.href = `zalo://conversation?phone=${phone}&message=${encodeURIComponent(msg)}`;
+    } else {
+        // Mở Web
+        window.open(`https://zalo.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // 5. THÔNG BÁO NHẮC KHÁCH (Cực kỳ quan trọng)
+    // Dùng setTimeout để thông báo hiện ra sau khi chuyển trang một chút
+    setTimeout(function() {
+        alert("✅ Đã copy đơn hàng!\n\n👉 Do chính sách Zalo, nếu bạn không thấy tin nhắn điền sẵn, vui lòng nhấn giữ ô chat và chọn DÁN (PASTE) nhé!");
+    }, 500);
 }
 
 function showToast(message) {
