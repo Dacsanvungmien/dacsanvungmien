@@ -1,6 +1,6 @@
 // main.js - Phiên bản Tự động đồng bộ Realtime
 
-const PHONE_NUMBER = "0912345678"; // Thay số Zalo của bạn (bỏ số 0 đầu, ví dụ 849...)
+const PHONE_NUMBER = "84949161132"; // Thay số Zalo của bạn (bỏ số 0 đầu, ví dụ 849...)
 
 // --- 1. CÁC HÀM XỬ LÝ CHÍNH ---
 
