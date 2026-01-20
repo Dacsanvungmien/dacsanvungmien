@@ -1,7 +1,16 @@
 // main.js - Phiên bản Tự động đồng bộ Realtime
 
-const PHONE_NUMBER = "84949161132"; // Thay số Zalo của bạn (bỏ số 0 đầu, ví dụ 849...)
+const PHONE_NUMBER = "0949161132"; // Thay số Zalo của bạn (bỏ số 0 đầu, ví dụ 849...)
 
+function formatZaloPhone(phone) {
+    // Xóa khoảng trắng, dấu gạch ngang nếu có
+    let cleanPhone = phone.replace(/\D/g, '');
+    // Nếu bắt đầu bằng 0, thay bằng 84
+    if (cleanPhone.startsWith('0')) {
+        cleanPhone = '84' + cleanPhone.slice(1);
+    }
+    return cleanPhone;
+}
 // --- 1. CÁC HÀM XỬ LÝ CHÍNH ---
 
 function addToCart(product) {
@@ -20,9 +29,21 @@ function addToCart(product) {
     updateCartCount(); // Cập nhật ngay
 }
 
+// HÀM MUA NGAY (1 MÓN)
 function buyNow(productName) {
     const message = `Chào Shop, tôi muốn mua nhanh món: ${productName}. Tư vấn giúp tôi nhé!`;
-    window.open(`https://zalo.me/${PHONE_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+    
+    // 1. Chuẩn hóa số điện thoại
+    const zaloPhone = formatZaloPhone(PHONE_NUMBER);
+    
+    // 2. Mã hóa nội dung tin nhắn (quan trọng)
+    const encodedMsg = encodeURIComponent(message);
+    
+    // 3. Tạo link
+    const url = `https://zalo.me/${zaloPhone}?text=${encodedMsg}`;
+    
+    // 4. Mở tab mới
+    window.open(url, '_blank');
 }
 
 function showToast(message) {
