@@ -167,33 +167,64 @@
             }
         }
 
-        // --- HÀM CHỐT ĐƠN (NÂNG CẤP) ---
+        // --- HÀM CHỐT ĐƠN (PHIÊN BẢN V2.0 - FIX LỖI PC & MOBILE) ---
         function checkoutZalo() {
-            if (cart.length === 0) return;
+            // 1. Kiểm tra giỏ hàng
+            if (cart.length === 0) {
+                alert("Giỏ hàng đang trống!");
+                return;
+            }
 
-            // 1. Soạn nội dung tin nhắn
-            let msg = "Chào Shop, tôi muốn đặt đơn hàng gồm:\n";
+            // 2. Soạn nội dung
+            let msg = "Chào Shop, tôi muốn đặt đơn hàng:\n";
             let total = 0;
-            
             cart.forEach(item => {
-                // Dùng dấu gạch đầu dòng và xuống dòng rõ ràng
                 msg += `- ${item.name} (SL: ${item.quantity})\n`;
                 total += item.price * item.quantity;
             });
+            msg += `\n💰 Tổng tiền: ${total.toLocaleString()}đ.\n📍 Địa chỉ giao hàng của tôi là: ...`;
             
-            msg += `\n💰 Tổng tiền: ${total.toLocaleString()}đ.\n📍 Bạn giao hàng cho tôi nhé!`;
-            
-            // 2. Xử lý số điện thoại (Lấy từ main.js hoặc hardcode)
-            // Đảm bảo biến PHONE_NUMBER đã được khai báo bên main.js
+            // 3. Xử lý số điện thoại (Chuyển 09xx -> 849xx)
+            // Lấy biến từ main.js, nếu lỗi thì dùng số cứng
             let phone = (typeof PHONE_NUMBER !== 'undefined') ? PHONE_NUMBER : '0912345678';
-            
-            // Chuyển 09xx thành 849xx
             phone = phone.replace(/\D/g, ''); 
             if (phone.startsWith('0')) phone = '84' + phone.slice(1);
 
-            // 3. Mở Zalo
-            // encodeURIComponent giúp biến đổi ký tự xuống dòng (\n) thành mã máy tính hiểu được
-            window.open(`https://zalo.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+            // 4. THỰC HIỆN COPY VÀO BỘ NHỚ
+            // Dùng kỹ thuật "Textarea ảo" để đảm bảo chạy được trên mọi thiết bị
+            const textArea = document.createElement("textarea");
+            textArea.value = msg;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy'); // Lệnh copy kinh điển
+            } catch (err) {
+                console.error('Không copy được', err);
+            }
+            document.body.removeChild(textArea);
+
+            // 5. HIỆN HỘP THOẠI XÁC NHẬN (QUAN TRỌNG NHẤT)
+            // Hộp thoại này sẽ chặn trình duyệt lại, buộc khách đọc xong mới mở Zalo
+            let userConfirm = confirm(
+                "✅ Đã copy đơn hàng!\n\n" +
+                "👉 Do chính sách bảo mật, Zalo có thể không hiện sẵn nội dung.\n" +
+                "👉 Vui lòng nhấn giữ ô chat và chọn DÁN (PASTE) nhé!\n\n" +
+                "Nhấn OK để mở Zalo ngay."
+            );
+
+            // 6. NẾU KHÁCH BẤM OK THÌ MỚI MỞ ZALO
+            if (userConfirm) {
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    // Mobile: Dùng Deep Link (Mở App)
+                    window.location.href = `zalo://conversation?phone=${phone}&message=${encodeURIComponent(msg)}`;
+                } else {
+                    // PC: Dùng Web Link (Mở tab mới)
+                    // encodeURIComponent giúp mã hóa ký tự xuống dòng
+                    window.open(`https://zalo.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+                }
+            }
         }
 
         // Chạy lần đầu khi vào trang
