@@ -167,63 +167,74 @@
             }
         }
 
-        // --- HÀM CHỐT ĐƠN (PHIÊN BẢN V2.0 - FIX LỖI PC & MOBILE) ---
+        // --- HÀM CHỐT ĐƠN (PHIÊN BẢN AN TOÀN CAO NHẤT) ---
         function checkoutZalo() {
-            // 1. Kiểm tra giỏ hàng
-            if (cart.length === 0) {
-                alert("Giỏ hàng đang trống!");
-                return;
-            }
-
-            // 2. Soạn nội dung
-            let msg = "Chào Shop, tôi muốn đặt đơn hàng:\n";
-            let total = 0;
-            cart.forEach(item => {
-                msg += `- ${item.name} (SL: ${item.quantity})\n`;
-                total += item.price * item.quantity;
-            });
-            msg += `\n💰 Tổng tiền: ${total.toLocaleString()}đ.\n📍 Địa chỉ giao hàng của tôi là: ...`;
-            
-            // 3. Xử lý số điện thoại (Chuyển 09xx -> 849xx)
-            // Lấy biến từ main.js, nếu lỗi thì dùng số cứng
-            let phone = (typeof PHONE_NUMBER !== 'undefined') ? PHONE_NUMBER : '0912345678';
-            phone = phone.replace(/\D/g, ''); 
-            if (phone.startsWith('0')) phone = '84' + phone.slice(1);
-
-            // 4. THỰC HIỆN COPY VÀO BỘ NHỚ
-            // Dùng kỹ thuật "Textarea ảo" để đảm bảo chạy được trên mọi thiết bị
-            const textArea = document.createElement("textarea");
-            textArea.value = msg;
-            document.body.appendChild(textArea);
-            textArea.select();
             try {
-                document.execCommand('copy'); // Lệnh copy kinh điển
-            } catch (err) {
-                console.error('Không copy được', err);
-            }
-            document.body.removeChild(textArea);
+                // 1. CẤU HÌNH SỐ ĐIỆN THOẠI TRỰC TIẾP TẠI ĐÂY (Để tránh lỗi thiếu biến)
+                // Bạn sửa số của bạn vào dòng dưới, giữ nguyên số 84 đầu
+                var myPhone = "84948161132"; 
 
-            // 5. HIỆN HỘP THOẠI XÁC NHẬN (QUAN TRỌNG NHẤT)
-            // Hộp thoại này sẽ chặn trình duyệt lại, buộc khách đọc xong mới mở Zalo
-            let userConfirm = confirm(
-                "✅ Đã copy đơn hàng!\n\n" +
-                "👉 Do chính sách bảo mật, Zalo có thể không hiện sẵn nội dung.\n" +
-                "👉 Vui lòng nhấn giữ ô chat và chọn DÁN (PASTE) nhé!\n\n" +
-                "Nhấn OK để mở Zalo ngay."
-            );
-
-            // 6. NẾU KHÁCH BẤM OK THÌ MỚI MỞ ZALO
-            if (userConfirm) {
-                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                
-                if (isMobile) {
-                    // Mobile: Dùng Deep Link (Mở App)
-                    window.location.href = `zalo://conversation?phone=${phone}&message=${encodeURIComponent(msg)}`;
-                } else {
-                    // PC: Dùng Web Link (Mở tab mới)
-                    // encodeURIComponent giúp mã hóa ký tự xuống dòng
-                    window.open(`https://zalo.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+                // 2. KIỂM TRA GIỎ HÀNG
+                // (Đảm bảo biến cart tồn tại)
+                if (typeof cart === 'undefined' || cart.length === 0) {
+                    alert("Giỏ hàng đang trống trơn!");
+                    return;
                 }
+
+                // 3. SOẠN TIN NHẮN
+                var msg = "Chào Shop, tôi muốn đặt đơn hàng:\n";
+                var total = 0;
+                cart.forEach(function(item) {
+                    msg += "- " + item.name + " (SL: " + item.quantity + ")\n";
+                    total += item.price * item.quantity;
+                });
+                msg += "\n💰 Tổng tiền: " + total.toLocaleString() + "đ.\n📍 Giao giúp tôi nhé!";
+
+                // 4. THỰC HIỆN COPY (CÓ BẢO VỆ LỖI)
+                // Chúng ta bọc trong try-catch để nếu copy lỗi thì code vẫn chạy tiếp
+                var copySuccess = false;
+                try {
+                    var textArea = document.createElement("textarea");
+                    textArea.value = msg;
+                    textArea.style.position = "fixed"; // Để không làm nhảy trang
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    var successful = document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    if(successful) copySuccess = true;
+                } catch (err) {
+                    console.error('Lỗi copy:', err);
+                    // Không làm gì cả, cứ chạy tiếp
+                }
+
+                // 5. THÔNG BÁO CHO KHÁCH (Dùng confirm để dừng màn hình)
+                var confirmMsg = "✅ Đã tạo đơn hàng!\n";
+                if (copySuccess) {
+                    confirmMsg += "👉 Nội dung đã được COPY vào bộ nhớ.\n";
+                }
+                confirmMsg += "👉 Nhấn OK để mở Zalo, sau đó bạn nhớ DÁN (PASTE) nội dung vào ô chat nhé!";
+
+                if (confirm(confirmMsg)) {
+                    // 6. MỞ ZALO (XỬ LÝ RIÊNG MOBILE/PC)
+                    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    var zaloUrl = "";
+
+                    if (isMobile) {
+                        // Mobile: Dùng Deep Link (Mở App)
+                        zaloUrl = "zalo://conversation?phone=" + myPhone + "&message=" + encodeURIComponent(msg);
+                        // Trên mobile dùng location.href để không bị trình duyệt chặn
+                        window.location.href = zaloUrl;
+                    } else {
+                        // PC: Dùng Web Link
+                        zaloUrl = "https://zalo.me/" + myPhone + "?text=" + encodeURIComponent(msg);
+                        window.open(zaloUrl, '_blank');
+                    }
+                }
+
+            } catch (e) {
+                // Nếu có bất kỳ lỗi gì sập web, nó sẽ hiện ra đây để mình biết
+                alert("Có lỗi xảy ra: " + e.message);
             }
         }
 
