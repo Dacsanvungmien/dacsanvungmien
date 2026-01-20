@@ -49,20 +49,35 @@ function addToCart(product) {
     updateCartCount();
 }
 
-// Hàm 2: MUA NGAY (Dùng cho nút ở trang chi tiết sản phẩm)
-function buyNow(productName) {
+// --- HÀM MUA NGAY (NÂNG CẤP HIỆN TỔNG TIỀN) ---
+// Lưu ý: Hàm này giờ nhận 2 tham số: Tên và Giá
+function buyNow(productName, productPrice) {
     try {
-        // Soạn tin
-        var msg = "Chào Shop, tôi muốn mua nhanh món: " + productName + ". Tư vấn giúp tôi nhé!";
+        // 1. Soạn nội dung tin nhắn cho giống form giỏ hàng
+        // Mặc định mua ngay là Số lượng: 1
+        var finalMsg = "Chào Shop, tôi muốn mua nhanh:\n";
+        finalMsg += "- " + productName + " (SL: 1)\n";
         
-        // Copy
-        copyToClipboard(msg);
-
-        // Xác nhận và mở Zalo
-        if (confirm("✅ Đã chép nội dung mua hàng!\n\n👉 Bấm OK để mở Zalo.\n👉 Sau đó bạn nhớ DÁN (PASTE) vào ô chat nhé!")) {
-            var finalPhone = formatZaloPhone(PHONE_NUMBER);
-            window.location.href = "https://zalo.me/" + finalPhone;
+        // Nếu có truyền giá tiền vào thì hiện dòng tổng tiền
+        if (productPrice > 0) {
+            finalMsg += "\n💰 Tổng: " + productPrice.toLocaleString('vi-VN') + "đ.\n";
         }
+        
+        finalMsg += "📍 Tư vấn và giao hàng giúp tôi nhé!";
+        
+        // 2. Thực hiện Copy (Dùng biến finalMsg)
+        copyToClipboard(finalMsg);
+
+        // 3. Thông báo và mở Zalo
+        if (confirm("✅ Đã chép đơn hàng!\n\n👉 Bấm OK để mở Zalo.\n👉 Sau đó bạn nhớ DÁN (PASTE) vào ô chat nhé!")) {
+            // Chuẩn hóa số điện thoại
+            var phone = PHONE_NUMBER.replace(/\D/g, '');
+            if (phone.startsWith('0')) phone = '84' + phone.slice(1);
+            
+            // Mở link Zalo
+            window.location.href = "https://zalo.me/" + phone;
+        }
+
     } catch (e) {
         alert("Lỗi: " + e.message);
     }
