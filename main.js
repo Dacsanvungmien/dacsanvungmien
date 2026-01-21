@@ -1,9 +1,11 @@
-// main.js - PHIÊN BẢN V5.0 (FIX LỖI MẤT CHỮ TRÊN PC)
+// main.js - PHIÊN BẢN V6.0 (ĐẦY ĐỦ TÍNH NĂNG LIÊN HỆ)
 
 // 1. CẤU HÌNH SỐ ĐIỆN THOẠI
-const PHONE_NUMBER = "0949161132"; // Số Zalo của bạn
+const PHONE_NUMBER = "0949161132"; // Số Zalo của bạn (Trần Hiếu Thuận)
 
-// Hàm hỗ trợ: Chuyển đổi số 09xx -> 849xx
+// --- CÁC HÀM HỖ TRỢ (CORE) ---
+
+// Chuyển đổi số 09xx -> 849xx
 function formatZaloPhone(phone) {
     let cleanPhone = phone.replace(/\D/g, '');
     if (cleanPhone.startsWith('0')) {
@@ -12,7 +14,7 @@ function formatZaloPhone(phone) {
     return cleanPhone;
 }
 
-// Hàm hỗ trợ: Copy nội dung
+// Copy nội dung an toàn
 function copyToClipboard(text) {
     try {
         var textArea = document.createElement("textarea");
@@ -31,23 +33,24 @@ function copyToClipboard(text) {
     }
 }
 
-// Hàm hỗ trợ: Mở Zalo thông minh (Tách luồng Mobile/PC)
+// Mở Zalo thông minh (Tách luồng Mobile/PC)
 function openZaloSmart(phone, message) {
     var finalPhone = formatZaloPhone(phone);
     var zaloUrl = "https://zalo.me/" + finalPhone + "?text=" + encodeURIComponent(message);
     var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     if (isMobile) {
-        // Mobile: Chuyển hướng trực tiếp để kích hoạt App
+        // Mobile: Chuyển hướng để kích hoạt App
         window.location.href = zaloUrl;
     } else {
-        // PC: Mở Tab mới để Zalo Web nhận được tin nhắn
+        // PC: Mở Tab mới để vào Zalo Web
         window.open(zaloUrl, '_blank');
     }
 }
 
 // --- 2. CÁC HÀM XỬ LÝ CHÍNH ---
 
+// Thêm vào giỏ
 function addToCart(product) {
     let cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
     let existingItem = cart.find(item => item.id === product.id);
@@ -64,10 +67,9 @@ function addToCart(product) {
     updateCartCount();
 }
 
-// --- HÀM MUA NGAY (Trang chi tiết) ---
+// MUA NGAY (Nút ở trang chi tiết sản phẩm)
 function buyNow(productName, productPrice) {
     try {
-        // 1. Soạn tin
         var finalMsg = "Chào Shop, tôi muốn mua nhanh:\n";
         finalMsg += "- " + productName + " (SL: 1)\n";
         if (productPrice && productPrice > 0) {
@@ -75,63 +77,58 @@ function buyNow(productName, productPrice) {
         }
         finalMsg += "📍 Tư vấn và giao hàng giúp tôi nhé!";
 
-        // 2. Copy
         copyToClipboard(finalMsg);
 
-        // 3. Mở Zalo
-        var confirmText = "✅ Đã chép nội dung mua hàng!\n\n👉 Bấm OK để mở Zalo.\n👉 Nếu thấy ô chat trống, bạn nhớ DÁN (PASTE) nhé!";
-        
-        if (confirm(confirmText)) {
+        if (confirm("✅ Đã chép nội dung mua hàng!\n\n👉 Bấm OK để mở Zalo.\n👉 Nếu thấy ô chat trống, bạn nhớ DÁN (PASTE) nhé!")) {
             openZaloSmart(PHONE_NUMBER, finalMsg);
         }
-
     } catch (e) {
         alert("Lỗi: " + e.message);
     }
 }
 
-// --- HÀM CHỐT ĐƠN (Trang giỏ hàng) ---
+// CHỐT ĐƠN (Nút ở trang Giỏ hàng)
 function checkoutZalo() {
     let cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
-
     if (cart.length === 0) {
         alert("Giỏ hàng đang trống!");
         return;
     }
-
     try {
-        // 1. Soạn tin
         var finalMsg = "Chào Shop, tôi muốn đặt đơn hàng:\n";
         let total = 0;
-
         cart.forEach(item => {
             let price = Number(item.price);
             let qty = Number(item.quantity);
             if (isNaN(price)) price = 0;
             if (isNaN(qty)) qty = 1;
-
             finalMsg += `- ${item.name} (SL: ${qty})\n`;
             total += price * qty;
         });
-
         finalMsg += `\n💰 Tổng: ${total.toLocaleString('vi-VN')}đ.\n📍 Giao giúp tôi nhé!`;
 
-        // 2. Copy
         copyToClipboard(finalMsg);
 
-        // 3. Mở Zalo
-        var confirmText = "✅ Đã chép đơn hàng!\n\n👉 Bấm OK để mở Zalo.\n👉 Nếu thấy ô chat trống, bạn nhớ DÁN (PASTE) nhé!";
-
-        if (confirm(confirmText)) {
+        if (confirm("✅ Đã chép đơn hàng!\n\n👉 Bấm OK để mở Zalo.\n👉 Nếu thấy ô chat trống, bạn nhớ DÁN (PASTE) nhé!")) {
             openZaloSmart(PHONE_NUMBER, finalMsg);
         }
-
     } catch (e) {
         alert("Lỗi: " + e.message);
     }
 }
 
-// Hàm hiển thị thông báo nhỏ
+// --- 3. HÀM CHO NÚT LIÊN HỆ TRANG CHỦ (BỔ SUNG) ---
+function startChatZalo() {
+    // Nội dung khách nhắn khi bấm nút "Chat Zalo tư vấn"
+    var msg = "Chào Shop (Trần Hiếu Thuận), mình đang xem web và cần tư vấn thêm ạ!";
+    
+    // Gọi hàm mở Zalo thông minh
+    openZaloSmart(PHONE_NUMBER, msg);
+}
+
+// --- 4. CÁC TIỆN ÍCH KHÁC ---
+
+// Hiển thị thông báo nhỏ
 function showToast(message) {
     let toast = document.getElementById("toast");
     if (!toast) {
@@ -144,7 +141,7 @@ function showToast(message) {
     setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
 }
 
-// --- 3. CÁC CẢM BIẾN TỰ ĐỘNG ---
+// Cập nhật số lượng giỏ hàng tự động
 function updateCartCount() {
     let cart = JSON.parse(localStorage.getItem('shop_giohang')) || [];
     let total = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -156,6 +153,7 @@ function updateCartCount() {
     }
 }
 
+// Kích hoạt các cảm biến tự động
 document.addEventListener("DOMContentLoaded", updateCartCount);
 window.addEventListener("pageshow", updateCartCount);
 window.addEventListener("focus", updateCartCount);
