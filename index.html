@@ -24,11 +24,12 @@
             margin: 0; padding: 0;
             color: var(--text-color);
             line-height: 1.6;
+            padding-bottom: 80px; /* Chừa chỗ cho giỏ hàng nổi */
         }
 
         a { text-decoration: none; color: inherit; }
         
-        /* Container mô phỏng màn hình Mobile nhưng vẫn đẹp trên PC */
+        /* Container mô phỏng màn hình Mobile */
         .wrapper {
             max-width: 500px;
             margin: 0 auto;
@@ -39,10 +40,11 @@
             overflow: hidden;
         }
 
-        /* --- 1. HERO SECTION (PHẦN ĐẦU) --- */
+        /* --- 1. HERO SECTION --- */
         .hero {
+            /* Thay ảnh nền Tịnh Biên ở đây */
             background: linear-gradient(to bottom, rgba(46, 125, 50, 0.9), rgba(46, 125, 50, 0.7)), 
-                        url('https://images.unsplash.com/photo-1546252085-364210d705c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'); /* Thay link ảnh nền vùng Tịnh Biên của bạn vào đây */
+                        url('https://images.unsplash.com/photo-1546252085-364210d705c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'); 
             background-size: cover;
             background-position: center;
             color: var(--white);
@@ -69,13 +71,14 @@
 
         .slogan { font-size: 14px; opacity: 0.9; margin-top: 5px; font-style: italic;}
 
-        /* --- 2. GIỚI THIỆU NGẮN --- */
+        /* --- 2. GIỚI THIỆU --- */
         .intro-section { padding: 30px 20px; text-align: center; }
         .section-title {
             color: var(--primary-color);
             font-size: 18px; text-transform: uppercase;
             letter-spacing: 1px; margin-bottom: 15px;
             position: relative; display: inline-block;
+            font-weight: bold;
         }
         .section-title::after {
             content: ''; display: block; width: 40px; height: 3px;
@@ -84,10 +87,10 @@
         }
         .intro-text { font-size: 14px; color: #666; text-align: justify; }
 
-        /* --- 3. DANH MỤC SẢN PHẨM (MENU GRID) --- */
+        /* --- 3. LƯỚI SẢN PHẨM (TỰ ĐỘNG) --- */
         .products-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Chia 2 cột */
+            grid-template-columns: 1fr 1fr; /* 2 cột */
             gap: 15px;
             padding: 0 20px 30px;
         }
@@ -99,269 +102,38 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             transition: transform 0.3s;
             border: 1px solid #eee;
+            display: flex; flex-direction: column;
+            position: relative;
         }
         
         .product-card:hover { transform: translateY(-5px); }
 
+        .p-img-box {
+            position: relative;
+            padding-top: 100%; /* Tạo khung vuông */
+            overflow: hidden;
+        }
+
         .p-img {
-            width: 100%; height: 120px;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
             object-fit: cover;
             background-color: #eee;
         }
 
-        .p-info { padding: 10px; text-align: center; }
-        .p-name { font-weight: 600; font-size: 14px; margin-bottom: 5px; display: block;}
-        .p-btn {
-            font-size: 11px; color: var(--primary-color);
-            font-weight: bold; text-transform: uppercase;
+        .p-new-badge {
+            position: absolute; top: 10px; right: 10px;
+            background: red; color: white;
+            font-size: 10px; padding: 2px 6px;
+            border-radius: 4px; font-weight: bold;
         }
 
-        /* --- 4. CÂU CHUYỆN SẢN PHẨM --- */
-        .story-section {
-            background-color: #f1f8e9; /* Màu xanh rất nhạt */
-            padding: 30px 20px;
-            margin: 0 15px 30px;
-            border-radius: 15px;
-            text-align: center;
-        }
-        .story-btn {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 10px 25px;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 25px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        /* --- 5. LIÊN HỆ & FOOTER --- */
-        .contact-list { padding: 0 20px 40px; }
-        .contact-item {
-            display: flex; align-items: center;
-            background: white; padding: 15px;
-            margin-bottom: 12px;
-            border-radius: 12px;
-            border: 1px solid #eee;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: 0.2s;
-        }
-        .contact-item:hover { border-color: var(--primary-color); background: #f9fff9; }
-        .c-icon {
-            width: 40px; height: 40px;
-            background: var(--primary-color);
-            color: white; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            margin-right: 15px; font-size: 18px;
-        }
-        .c-info div:first-child { font-weight: bold; font-size: 14px; }
-        .c-info div:last-child { font-size: 12px; color: #888; }
-
-        .footer {
-            background: #333; color: #aaa;
-            text-align: center; padding: 20px;
-            font-size: 11px;
-        }
-        /* Thêm vào trong thẻ <style> */
+        .p-info { padding: 10px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .p-name { font-weight: 600; font-size: 14px; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 38px; color: #333; }
+        
         .p-price {
             color: #d32f2f; /* Màu đỏ */
             font-weight: bold;
             font-size: 14px;
             display: block;
-            margin-bottom: 4px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="wrapper">
-
-    <div class="hero">
-        <img src="images/tinhbien.jpg" alt="Cô Ba Tịnh Biên" class="avatar">
-        <h1 class="brand-name">TÊN CỬA HÀNG</h1>
-        <p class="slogan">"Chất lượng và Uy tín"</p>
-        <p class="slogan">"Chuyên đặc sản chuẩn gốc - Không ngon hoàn tiền. Mang hương vị quê nhà đến gian bếp của bạn."</p>
-    </div>
-
-    <div class="intro-section">
-        <div class="section-title">Về Chúng Tôi</div>
-        <div class="intro-text">
-            Chào mừng bạn đến với cửa hàng! Chúng tôi chuyên cung cấp các sản phẩm chuẩn gốc các vùng miền. Cam kết uy tín, giữ trọn hương vị tự nhiên và an toàn cho sức khỏe gia đình bạn.
-        </div>
-    </div>
-
-    <h3 style="text-align:center; color: var(--primary-color); margin-bottom: 20px; text-transform: uppercase;">
-        🔥 Top 10 Đặc Sản Bán Chạy
-    </h3>
-    
-    <div class="products-grid">
-        
-        <a href="ct mamcaloc.html" class="product-card">
-            <img src="https://via.placeholder.com/300x300?text=SP+1" class="p-img" alt="Tên SP 1">
-            <div class="p-info">
-                <span class="p-name">Mắm Cá Linh Xay</span>
-                <span class="p-price">55.000đ</span>
-                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
-            </div>
-        </a>
-
-        <a href="https://zalo.me/sdt_cua_ban" class="product-card">
-            <img src="https://via.placeholder.com/300x300?text=SP+2" class="p-img" alt="Tên SP 2">
-            <div class="p-info">
-                <span class="p-name">Đường Thốt Nốt (Hũ)</span>
-                <span class="p-price">35.000đ</span>
-                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
-            </div>
-        </a>
-
-        <a href="#" class="product-card">
-            <img src="https://via.placeholder.com/300x300?text=SP+3" class="p-img" alt="SP 3">
-            <div class="p-info">
-                <span class="p-name">Khô Cá Lóc Cửng</span>
-                <span class="p-price">250.000đ/kg</span>
-                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
-            </div>
-        </a>
-
-        <a href="#" class="product-card">
-            <img src="https://via.placeholder.com/300x300?text=SP+4" class="p-img" alt="SP 4">
-            <div class="p-info">
-                <span class="p-name">Tinh Dầu Chúc</span>
-                <span class="p-price">120.000đ</span>
-                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
-            </div>
-        </a>
-
-        <a href="#" class="product-card">
-            <img src="https://via.placeholder.com/300x300?text=SP+5" class="p-img" alt="SP 5">
-            <div class="p-info">
-                <span class="p-name">Mắm Thái Châu Đốc</span>
-                <span class="p-price">80.000đ</span>
-                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
-            </div>
-        </a>
-
-        <a href="#" class="product-card">
-            <img src="https://via.placeholder.com/300x300?text=SP+6" class="p-img" alt="SP 6">
-            <div class="p-info">
-                <span class="p-name">Me Thái Ngọt</span>
-                <span class="p-price">45.000đ</span>
-                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
-            </div>
-        </a>
-
-        <a href="#" class="product-card">
-            <img src="https://via.placeholder.com/300x300?text=SP+7" class="p-img" alt="SP 7">
-            <div class="p-info">
-                <span class="p-name">Nước Màu Thốt Nốt</span>
-                <span class="p-price">20.000đ</span>
-                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
-            </div>
-        </a>
-
-        <a href="#" class="product-card">
-            <img src="https://via.placeholder.com/300x300?text=SP+8" class="p-img" alt="SP 8">
-            <div class="p-info">
-                <span class="p-name">Khô Nhái (Vũ Nữ)</span>
-                <span class="p-price">450.000đ/kg</span>
-                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
-            </div>
-        </a>
-
-        <a href="#" class="product-card">
-            <img src="https://via.placeholder.com/300x300?text=SP+9" class="p-img" alt="SP 9">
-            <div class="p-info">
-                <span class="p-name">Tung Lò Mò (Bò)</span>
-                <span class="p-price">180.000đ</span>
-                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
-            </div>
-        </a>
-
-        <a href="#" class="product-card">
-            <img src="https://via.placeholder.com/300x300?text=SP+10" class="p-img" alt="SP 10">
-            <div class="p-info">
-                <span class="p-name">Trái Chúc Tươi</span>
-                <span class="p-price">80.000đ/kg</span>
-                <span class="p-btn">Mua ngay <i class="fas fa-shopping-cart"></i></span>
-            </div>
-        </a>
-
-    </div>
-    
-    <div style="text-align:center; margin-bottom:30px;">
-        <a href="san-pham.html" style="font-size:13px; text-decoration:underline; color:#666;">Xem tất cả sản phẩm khác >></a>
-    </div>
-
-    <div class="story-section">
-        <div class="section-title">Những câu chuyện sản phẩm</div>
-        <p style="font-size: 13px; color: #555;">
-            "Mỗi vùng đất đều mang trong mình những hương vị rất riêng, được kết tinh từ thiên nhiên, con người và thời gian. Những sản phẩm đặc sản không chỉ đơn thuần là món ăn hay vật phẩm quen thuộc, mà còn là câu chuyện về nguồn gốc, về bàn tay khéo léo của người làm ra chúng và cả ký ức văn hóa được gìn giữ qua nhiều thế hệ. Khi ta chậm lại để lắng nghe và cảm nhận, từng sản phẩm sẽ mở ra một hành trình thú vị, nơi hương vị, cảm xúc và câu chuyện hòa quyện, dẫn dắt người đọc bước vào thế giới đặc sản đầy chân thực và gần gũi...."
-        </p>
-        <a href="cau-chuyen.html" class="story-btn">Đọc tiếp hành trình <i class="fas fa-book-open"></i></a>
-    </div>
-
-    <div class="contact-list">
-        <h3 style="text-align:center; color: var(--primary-color);">Liên Hệ Ngay</h3>
-        
-        <a href="javascript:void(0)" onclick="startChatZalo()" class="contact-item">
-            <div class="c-icon"><i class="fas fa-comment-dots"></i></div>
-            <div class="c-info">
-                <div>Chat Zalo tư vấn</div>
-                <div>Phản hồi ngay lập tức</div>
-            </div>
-        </a>
-
-        <a href="tel:09.666.09447" class="contact-item">
-            <div class="c-icon" style="background: var(--accent-color);"><i class="fas fa-phone-alt"></i></div>
-            <div class="c-info">
-                <div>Gọi Hotline</div>
-                <div>09.666.09447 (Trần Hiếu Thuận)</div>
-            </div>
-        </a>
-
-        <a href="https://maps.app.goo.gl/NXv9eosahbugDTb7A" target="_blank" class="contact-item">
-            <div class="c-icon" style="background: #4285F4;"><i class="fas fa-map-marker-alt"></i></div>
-            <div class="c-info">
-                <div>Tìm đường đến cửa hàng</div>
-                <div>Tịnh Biên, An Giang</div>
-            </div>
-        </a>
-    </div>
-
-    <div class="footer">
-        © 2025 Đặc Sản Vùng Miền - Developed by [Trần Hiếu Thuận]
-    </div>
-
-</div>
-    <a href="gio-hang.html" class="floating-cart">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="cart-count">0</span>
-    </a>
-
-    <style>
-        /* CSS cho nút giỏ hàng nổi */
-        .floating-cart {
-            position: fixed; bottom: 100px; right: 20px;
-            width: 60px; height: 60px;
-            background-color: #d32f2f; color: white;
-            border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 999; text-decoration: none; font-size: 24px;
-            transition: transform 0.2s;
-        }
-        .floating-cart:active { transform: scale(0.9); }
-        
-        /* Số lượng nhỏ xíu trên góc */
-        #cart-count {
-            position: absolute; top: -5px; right: -5px;
-            background: #ffeb3b; color: #d32f2f;
-            width: 24px; height: 24px;
-            border-radius: 50%; font-size: 12px; font-weight: bold;
-            display: flex; justify-content: center; align-items: center;
-            border: 2px solid white;
-        }
-    </style>
-    <script src="main.js"></script>
-</body>
-</html>
+            margin-bottom
