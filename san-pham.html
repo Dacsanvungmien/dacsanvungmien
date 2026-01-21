@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa Hàng Đặc Sản An Giang - Tất Cả Sản Phẩm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. CẤU TRÚC CƠ BẢN --- */
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background-color: #f4f6f8; padding-bottom: 80px; }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- 2. HEADER & BANNER --- */
+        .page-header {
+            background: linear-gradient(to right, #2e7d32, #4caf50); /* Màu xanh đặc trưng */
+            color: white; padding: 20px; text-align: center;
+            position: relative;
+        }
+        .home-btn { position: absolute; left: 15px; top: 20px; color: white; font-size: 20px; }
+        .page-title { margin: 0; font-size: 24px; font-weight: bold; }
+        .page-sub { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+
+        /* --- 3. THANH DANH MỤC DÍNH (STICKY BAR) --- */
+        .category-bar {
+            position: sticky; top: 0; z-index: 99;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex; overflow-x: auto; /* Cho phép trượt ngang trên mobile */
+            padding: 10px 0;
+            white-space: nowrap; /* Không xuống dòng */
+        }
+        /* Ẩn thanh cuộn xấu xí */
+        .category-bar::-webkit-scrollbar { display: none; }
+        
+        .cat-item {
+            padding: 8px 20px; margin: 0 5px;
+            border-radius: 20px; background: #f0f2f5;
+            color: #555; font-size: 14px; font-weight: 600;
+            transition: 0.3s; cursor: pointer;
+        }
+        /* Món đầu tiên (Tất cả) Active */
+        .cat-item.active { background: #2e7d32; color: white; }
+        .cat-item:first-child { margin-left: 15px; } 
+
+        /* --- 4. DANH SÁCH SẢN PHẨM (GRID SYSTEM) --- */
+        .product-section { padding: 15px; max-width: 1200px; margin: 0 auto; }
+        .section-label { 
+            font-size: 18px; font-weight: bold; color: #2e7d32; 
+            margin: 20px 0 10px 0; display: block; 
+            border-left: 4px solid #fbc02d; padding-left: 10px;
+        }
+
+        .product-grid {
+            display: grid;
+            /* Mobile: 2 cột, PC: 4-5 cột (Tự động tính toán) */
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+            gap: 15px;
+        }
+
+        /* THẺ SẢN PHẨM (CARD) */
+        .pro-card {
+            background: white; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s; position: relative;
+            display: flex; flex-direction: column;
+        }
+        .pro-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+        .pro-img-box { position: relative; overflow: hidden; padding-top: 100%; /* Vuông */ }
+        .pro-img { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            object-fit: cover; transition: 0.3s; 
+        }
+        .pro-card:hover .pro-img { transform: scale(1.1); } /* Phóng to ảnh khi di chuột */
+
+        .pro-info { padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .pro-name { 
+            font-size: 14px; font-weight: 600; color: #333; margin-bottom: 5px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; /* Cắt dòng nếu tên dài */
+        }
+        .pro-price { color: #d32f2f; font-weight: bold; font-size: 16px; }
+        .pro-origin { font-size: 11px; color: #888; margin-bottom: 8px; }
+
+        /* Nút bấm mua hàng */
+        .pro-actions { display: flex; gap: 5px; margin-top: 10px; }
+        .btn-add-cart {
+            flex: 1; background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9;
+            padding: 8px 0; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer;
+        }
+        .btn-buy-now {
+            flex: 1; background: #d32f2f; color: white; border: none;
+            padding: 8px 0; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer;
+        }
+
+        /* --- 5. TIỆN ÍCH KHÁC --- */
+        /* Nút Giỏ hàng nổi (Copy style từ index) */
+        .floating-cart {
+            position: fixed; bottom: 20px; left: 20px;
+            width: 60px; height: 60px; background: #2e7d32;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 24px; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.4);
+            z-index: 100;
+        }
+        .cart-badge {
+            position: absolute; top: -5px; right: -5px;
+            background: red; color: white; font-size: 12px; font-weight: bold;
+            padding: 4px 8px; border-radius: 20px; border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-header">
+        <a href="index.html" class="home-btn"><i class="fas fa-arrow-left"></i></a>
+        <h1 class="page-title">Cửa Hàng</h1>
+        <div class="page-sub">Hương vị Tịnh Biên - An Giang</div>
+    </div>
+
+    <div class="category-bar">
+        <div class="cat-item active" onclick="scrollToSection('all')">Tất cả</div>
+        <div class="cat-item" onclick="scrollToSection('mam')">Đặc Sản Mắm</div>
+        <div class="cat-item" onclick="scrollToSection('kho')">Các Loại Khô</div>
+        <div class="cat-item" onclick="scrollToSection('khac')">Đường & Bánh</div>
+        <div class="cat-item" onclick="scrollToSection('khac')">Đồ Thủ Công</div>
+    </div>
+
+    <div class="product-section">
+        
+        <div id="mam">
+            <span class="section-label">ĐẶC SẢN MẮM</span>
+            <div class="product-grid">
+                
+                <div class="pro-card">
+                    <a href="mam-ca-linh.html" class="pro-img-box">
+                        <img src="images/mam-ca-linh.jpg" class="pro-img" onerror="this.src='https://via.placeholder.com/300'">
+                    </a>
+                    <div class="pro-info">
+                        <a href="mam-ca-linh.html" class="pro-name">Mắm Cá Linh Xay Tịnh Biên (500g)</a>
+                        <div class="pro-origin">Xuất xứ: Tịnh Biên</div>
+                        <div class="pro-price">55.000đ</div>
+                        <div class="pro-actions">
+                            <button class="btn-add-cart" onclick="addToCart({id: 'mam-ca-linh', name: 'Mắm Cá Linh Xay', price: 55000, image: 'images/mam-ca-linh.jpg', url: 'mam-ca-linh.html'})">
+                                <i class="fas fa-cart-plus"></i> Thêm
+                            </button>
+                            <button class="btn-buy-now" onclick="buyNow('Mắm Cá Linh Xay', 55000)">Mua Ngay</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pro-card">
+                    <a href="#" class="pro-img-box">
+                        <img src="images/mam-thai.jpg" class="pro-img" onerror="this.src='https://via.placeholder.com/300'">
+                    </a>
+                    <div class="pro-info">
+                        <a href="#" class="pro-name">Mắm Thái Cá Lóc (Hũ 500g)</a>
+                        <div class="pro-origin">Xuất xứ: Châu Đốc</div>
+                        <div class="pro-price">90.000đ</div>
+                        <div class="pro-actions">
+                            <button class="btn-add-cart" onclick="addToCart({id: 'mam-thai', name: 'Mắm Thái Cá Lóc', price: 90000, image: 'images/mam-thai.jpg', url: '#'})">
+                                <i class="fas fa-cart-plus"></i> Thêm
+                            </button>
+                            <button class="btn-buy-now" onclick="buyNow('Mắm Thái Cá Lóc', 90000)">Mua Ngay</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div id="kho" style="margin-top: 30px;">
+            <span class="section-label">ĐẶC SẢN KHÔ</span>
+            <div class="product-grid">
+
+                <div class="pro-card">
+                    <a href="kho-ca-loc.html" class="pro-img-box">
+                        <div style="position:absolute; top:5px; right:5px; background:red; color:white; font-size:10px; padding:3px 6px; border-radius:3px;">HOT</div>
+                        <img src="images/kho-ca-loc.jpg" class="pro-img" onerror="this.src='https://via.placeholder.com/300'">
+                    </a>
+                    <div class="pro-info">
+                        <a href="kho-ca-loc.html" class="pro-name">Khô Cá Lóc Đồng Phơi 3 Nắng (1kg)</a>
+                        <div class="pro-origin">Xuất xứ: Tịnh Biên</div>
+                        <div class="pro-price">220.000đ</div>
+                        <div class="pro-actions">
+                            <button class="btn-add-cart" onclick="addToCart({id: 'kho-ca-loc', name: 'Khô Cá Lóc Đồng', price: 220000, image: 'images/kho-ca-loc.jpg', url: 'kho-ca-loc.html'})">
+                                <i class="fas fa-cart-plus"></i> Thêm
+                            </button>
+                            <button class="btn-buy-now" onclick="buyNow('Khô Cá Lóc Đồng', 220000)">Mua Ngay</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pro-card">
+                    <a href="#" class="pro-img-box">
+                        <img src="images/kho-nhai.jpg" class="pro-img" onerror="this.src='https://via.placeholder.com/300'">
+                    </a>
+                    <div class="pro-info">
+                        <a href="#" class="pro-name">Khô Nhái (Vũ Nữ Chân Dài)</a>
+                        <div class="pro-origin">Xuất xứ: Tịnh Biên</div>
+                        <div class="pro-price">550.000đ</div>
+                        <div class="pro-actions">
+                            <button class="btn-add-cart" onclick="addToCart({id: 'kho-nhai', name: 'Khô Nhái', price: 550000, image: 'images/kho-nhai.jpg', url: '#'})">
+                                <i class="fas fa-cart-plus"></i> Thêm
+                            </button>
+                            <button class="btn-buy-now" onclick="buyNow('Khô Nhái', 550000)">Mua Ngay</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="khac" style="margin-top: 30px;">
+            <span class="section-label">ĐẶC SẢN KHÁC</span>
+            <div class="product-grid">
+                <div class="pro-card">
+                    <a href="#" class="pro-img-box">
+                        <img src="images/duong-thot-not.jpg" class="pro-img" onerror="this.src='https://via.placeholder.com/300'">
+                    </a>
+                    <div class="pro-info">
+                        <a href="#" class="pro-name">Đường Thốt Nốt Nguyên Chất (1kg)</a>
+                        <div class="pro-origin">Xuất xứ: Bảy Núi</div>
+                        <div class="pro-price">45.000đ</div>
+                        <div class="pro-actions">
+                            <button class="btn-add-cart" onclick="addToCart({id: 'duong-thot-not', name: 'Đường Thốt Nốt', price: 45000, image: 'images/duong-thot-not.jpg', url: '#'})">
+                                <i class="fas fa-cart-plus"></i> Thêm
+                            </button>
+                            <button class="btn-buy-now" onclick="buyNow('Đường Thốt Nốt', 45000)">Mua Ngay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <a href="gio-hang.html" class="floating-cart">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="cart-count">0</span>
+    </a>
+
+    <script src="main.js"></script>
+    <script>
+        // Hàm cuộn mượt tới các mục (Mắm, Khô...)
+        function scrollToSection(id) {
+            // Đổi màu nút active trên thanh menu
+            document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (id === 'all') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                const element = document.getElementById(id);
+                // Trừ đi chiều cao của thanh menu dính (khoảng 60px) để không bị che
+                const y = element.getBoundingClientRect().top + window.pageYOffset - 70;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>
