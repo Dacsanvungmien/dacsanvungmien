@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đang tải sản phẩm...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background: #f9fbf9; padding-bottom: 80px; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        /* Loading */
+        #loading { text-align: center; padding-top: 100px; }
+        #content { display: none; } /* Mặc định ẩn để chờ tải data */
+
+        /* Ảnh sản phẩm */
+        .detail-img { width: 100%; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
+        /* Thông tin */
+        .p-title { color: #2e7d32; font-size: 24px; margin: 0 0 10px 0; }
+        .p-price { color: #d32f2f; font-size: 22px; font-weight: bold; margin-bottom: 20px; display: block; }
+        .p-desc { line-height: 1.6; color: #555; background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+
+        /* Nút mua hàng */
+        .fixed-bottom-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+            padding: 10px 20px; box-shadow: 0 -5px 10px rgba(0,0,0,0.05); display: flex; gap: 10px;
+            box-sizing: border-box;
+        }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .btn-cart { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+        .btn-buy { background: #d32f2f; color: white; }
+    </style>
+</head>
+<body>
+
+    <div style="padding: 15px;">
+        <a href="san-pham.html" style="text-decoration:none; color:#333; font-weight:bold;">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <div id="loading">
+        <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#2e7d32"></i>
+        <p>Đang lấy thông tin sản phẩm...</p>
+    </div>
+
+    <div id="content" class="container">
+        <img id="d-img" src="" class="detail-img">
+        <h1 id="d-name" class="p-title"></h1>
+        <span id="d-price" class="p-price"></span>
+        
+        <div class="p-desc">
+            <h3>Mô tả sản phẩm</h3>
+            <p id="d-desc"></p>
+        </div>
+    </div>
+
+    <div class="fixed-bottom-bar" id="action-bar" style="display:none">
+        <button class="btn btn-cart" id="btn-add">Thêm vào giỏ</button>
+        <button class="btn btn-buy" id="btn-buy">Mua Ngay</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="main.js"></script>
+
+    <script>
+        // --- 1. CẤU HÌNH LINK SHEET (Dán lại link CSV của bạn vào đây) ---
+        const SHEET_URL = "DÁN_LINK_CSV_CỦA_BẠN_VÀO_ĐÂY";
+
+        // --- 2. LẤY ID TỪ THANH ĐỊA CHỈ (Ví dụ: ?id=kho-ca-loc) ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        // --- 3. TẢI DỮ LIỆU TỪ SHEET ---
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!productId) {
+                alert("Không tìm thấy sản phẩm!");
+                window.location.href = "san-pham.html";
+                return;
+            }
+
+            Papa.parse(SHEET_URL, {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    findAndRenderProduct(results.data);
+                }
+            });
+        });
+
+        // --- 4. TÌM VÀ HIỂN THỊ ---
+        function findAndRenderProduct(products) {
+            // Tìm dòng trong Excel có cột id trùng với productId
+            const product = products.find(item => item.id === productId);
+
+            if (!product) {
+                document.getElementById('loading').innerHTML = "Sản phẩm không tồn tại hoặc đã bị xóa.";
+                return;
+            }
+
+            // Có dữ liệu -> Điền vào HTML
+            document.title = product.name; // Đổi tên tab trình duyệt
+            document.getElementById('d-img').src = product.image;
+            document.getElementById('d-name').innerText = product.name;
+            
+            let price = Number(product.price);
+            document.getElementById('d-price').innerText = price.toLocaleString('vi-VN') + 'đ';
+            
+            // Xử lý mô tả (nếu cột description trống thì hiện câu mặc định)
+            document.getElementById('d-desc').innerHTML = product.description ? product.description : "Đang cập nhật mô tả...";
+
+            // Cấu hình nút bấm
+            document.getElementById('btn-add').onclick = function() {
+                addToCart({
+                    id: product.id,
+                    name: product.name,
+                    price: price,
+                    image: product.image,
+                    url: window.location.href // Lưu lại link hiện tại để khách quay lại
+                });
+            };
+
+            document.getElementById('btn-buy').onclick = function() {
+                buyNow(product.name, price);
+            };
+
+            // Hiện giao diện lên
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('action-bar').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
