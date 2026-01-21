@@ -136,4 +136,227 @@
             font-weight: bold;
             font-size: 14px;
             display: block;
-            margin-bottom
+            margin-bottom: 8px;
+        }
+
+        .p-btn {
+            font-size: 11px; color: var(--primary-color);
+            font-weight: bold; text-transform: uppercase;
+            border: 1px solid var(--primary-color);
+            padding: 5px; border-radius: 5px;
+            background: #f1f8e9;
+        }
+
+        /* --- 4. STORY & CONTACT --- */
+        .story-section {
+            background-color: #f1f8e9;
+            padding: 30px 20px;
+            margin: 0 15px 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .story-btn {
+            display: inline-block; margin-top: 15px; padding: 10px 25px;
+            background: var(--primary-color); color: white;
+            border-radius: 25px; font-size: 13px; font-weight: 600;
+        }
+
+        .contact-list { padding: 0 20px 40px; }
+        .contact-item {
+            display: flex; align-items: center; background: white; padding: 15px;
+            margin-bottom: 12px; border-radius: 12px; border: 1px solid #eee;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; cursor: pointer;
+        }
+        .contact-item:hover { border-color: var(--primary-color); background: #f9fff9; }
+        .c-icon {
+            width: 40px; height: 40px; background: var(--primary-color);
+            color: white; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            margin-right: 15px; font-size: 18px;
+        }
+        .c-info div:first-child { font-weight: bold; font-size: 14px; }
+        .c-info div:last-child { font-size: 12px; color: #888; }
+
+        .footer {
+            background: #333; color: #aaa;
+            text-align: center; padding: 20px;
+            font-size: 11px;
+        }
+
+        /* GIỎ HÀNG NỔI */
+        .floating-cart {
+            position: fixed; bottom: 30px; right: 20px;
+            width: 60px; height: 60px;
+            background-color: #d32f2f; color: white;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 999; text-decoration: none; font-size: 24px;
+            transition: transform 0.2s;
+        }
+        .floating-cart:active { transform: scale(0.9); }
+        #cart-count {
+            position: absolute; top: -5px; right: -5px;
+            background: #ffeb3b; color: #d32f2f;
+            width: 24px; height: 24px;
+            border-radius: 50%; font-size: 12px; font-weight: bold;
+            display: flex; justify-content: center; align-items: center;
+            border: 2px solid white;
+        }
+        
+        /* Loading */
+        #loading-msg {
+            grid-column: 1 / -1; text-align: center; color: #888; padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <div class="hero">
+        <img src="images/tinhbien.jpg" alt="Đặc Sản Tịnh Biên" class="avatar" onerror="this.src='https://via.placeholder.com/150'">
+        <h1 class="brand-name">ĐẶC SẢN TỊNH BIÊN</h1>
+        <p class="slogan">"Chất lượng và Uy tín"</p>
+        <p class="slogan" style="font-size:12px; max-width: 90%; margin: 5px auto;">"Chuyên đặc sản chuẩn gốc - Không ngon hoàn tiền.<br>Mang hương vị quê nhà đến gian bếp của bạn."</p>
+    </div>
+
+    <div class="intro-section">
+        <div class="section-title">Về Chúng Tôi</div>
+        <div class="intro-text">
+            Chào mừng bạn đến với cửa hàng! Chúng tôi chuyên cung cấp các sản phẩm chuẩn gốc vùng Bảy Núi - An Giang. Cam kết uy tín, giữ trọn hương vị tự nhiên và an toàn cho sức khỏe gia đình bạn.
+        </div>
+    </div>
+
+    <h3 style="text-align:center; color: var(--primary-color); margin-bottom: 20px; text-transform: uppercase;">
+        🔥 Sản Phẩm Mới Nhất
+    </h3>
+    
+    <div class="products-grid" id="featured-list">
+        <div id="loading-msg">
+            <i class="fas fa-spinner fa-spin"></i> Đang tải đặc sản về...
+        </div>
+    </div>
+    
+    <div style="text-align:center; margin-bottom:30px;">
+        <a href="san-pham.html" style="font-size:13px; text-decoration:underline; color:#666; font-weight:600;">Xem tất cả sản phẩm khác >></a>
+    </div>
+
+    <div class="story-section">
+        <div class="section-title">Câu chuyện sản phẩm</div>
+        <p style="font-size: 13px; color: #555; font-style: italic;">
+            "Mỗi vùng đất đều mang trong mình những hương vị rất riêng... Khi ta chậm lại để lắng nghe, từng sản phẩm sẽ mở ra một hành trình thú vị, nơi hương vị và cảm xúc hòa quyện..."
+        </p>
+        <a href="san-pham.html" class="story-btn">Khám phá ngay <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <div class="contact-list">
+        <h3 style="text-align:center; color: var(--primary-color); margin-bottom: 20px;">Liên Hệ Ngay</h3>
+        
+        <div onclick="startChatZalo()" class="contact-item">
+            <div class="c-icon"><i class="fas fa-comment-dots"></i></div>
+            <div class="c-info">
+                <div>Chat Zalo tư vấn</div>
+                <div>Phản hồi ngay lập tức</div>
+            </div>
+        </div>
+
+        <a href="tel:0966609447" class="contact-item">
+            <div class="c-icon" style="background: var(--accent-color);"><i class="fas fa-phone-alt"></i></div>
+            <div class="c-info">
+                <div>Gọi Hotline</div>
+                <div>09.666.09447 (Trần Hiếu Thuận)</div>
+            </div>
+        </a>
+
+        <a href="https://maps.app.goo.gl/NXv9eosahbugDTb7A" target="_blank" class="contact-item">
+            <div class="c-icon" style="background: #4285F4;"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="c-info">
+                <div>Tìm đường đến cửa hàng</div>
+                <div>Tịnh Biên, An Giang</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="footer">
+        © 2025 Đặc Sản Vùng Miền - Developed by Trần Hiếu Thuận
+    </div>
+
+</div>
+
+<a href="gio-hang.html" class="floating-cart">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count">0</span>
+</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+<script src="main.js"></script>
+
+<script>
+    // --- CẤU HÌNH LIÊN KẾT GOOGLE SHEET ---
+    // ⚠️ QUAN TRỌNG: Dán link CSV Google Sheet của bạn vào đây
+    const HOME_SHEET_URL = "DÁN_LINK_CSV_CỦA_BẠN_VÀO_ĐÂY";
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Kiểm tra xem đã dán link chưa
+        if(!HOME_SHEET_URL || HOME_SHEET_URL.includes("DÁN_LINK")) {
+            // Nếu chưa dán link, hiện mẫu 2 sản phẩm demo cho đẹp
+            document.getElementById('loading-msg').style.display = 'none';
+            document.getElementById('featured-list').innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; color:red; padding:20px;">
+                    Chưa kết nối Google Sheet!<br>Vui lòng dán link CSV vào file index.html
+                </div>
+            `;
+            return;
+        }
+
+        // Đọc dữ liệu từ Sheet
+        Papa.parse(HOME_SHEET_URL, {
+            download: true,
+            header: true,
+            complete: function(results) {
+                renderHomeProducts(results.data);
+            }
+        });
+    });
+
+    function renderHomeProducts(products) {
+        const container = document.getElementById('featured-list');
+        
+        // 1. Lọc dòng trống
+        let cleanData = products.filter(item => item.id && item.name);
+
+        // 2. Đảo ngược danh sách (Lấy món mới nhập lên đầu)
+        cleanData.reverse();
+
+        // 3. Lấy 10 món đầu tiên
+        let topNew = cleanData.slice(0, 10);
+
+        // 4. Xóa loading và vẽ lại
+        container.innerHTML = "";
+        
+        topNew.forEach(item => {
+            let price = Number(item.price);
+            // Link tới trang chi tiết vạn năng
+            let detailLink = `chi-tiet.html?id=${item.id}`;
+
+            let html = `
+            <a href="${detailLink}" class="product-card">
+                <div class="p-img-box">
+                    <img src="${item.image}" class="p-img" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300'">
+                    <span class="p-new-badge">MỚI</span>
+                </div>
+                <div class="p-info">
+                    <span class="p-name">${item.name}</span>
+                    <span class="p-price">${price.toLocaleString('vi-VN')}đ</span>
+                    <span class="p-btn">Chi tiết <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+            `;
+            container.innerHTML += html;
+        });
+    }
+</script>
+
+</body>
+</html>
