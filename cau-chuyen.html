@@ -152,13 +152,13 @@
     <script>
         // --- 1. CẤU HÌNH LINK SHEET STORIES ---
         // ⚠️ QUAN TRỌNG: Dán link CSV của TAB "STORIES" vào đây
-        const STORY_SHEET_URL = "https://docs.google.com/spreadsheets/d/1SMmqZad2Pee2vycKIkgUQJdk1qr9GG6AAeACyMKA9cA/edit?usp=sharing";
+        const STORY_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQH7snJz3nrHMHLUz9F1NtMhbwXhKXd4EzCTSJAUMYOsoxHEc5UJ6rcW0cG4y8qF2z9H_Wy6mBJRvPJ/pub?gid=857091510&single=true&output=csv";
 
         // Biến lưu trữ dữ liệu tạm
         let allStories = [];
 
         document.addEventListener('DOMContentLoaded', function() {
-            if(STORY_SHEET_URL.includes("https://docs.google.com/spreadsheets/d/1SMmqZad2Pee2vycKIkgUQJdk1qr9GG6AAeACyMKA9cA/edit?usp=sharing")) {
+            if(STORY_SHEET_URL.includes("DÁN_LINK")) {
                 document.getElementById('loading').innerHTML = "Chưa kết nối dữ liệu câu chuyện!";
                 return;
             }
