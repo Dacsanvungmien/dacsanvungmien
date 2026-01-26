@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Câu Chuyện Đặc Sản - Hương Vị & Ký ức</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. CẤU HÌNH CHUNG --- */
+        :root {
+            --primary-color: #2e7d32;
+            --accent-color: #e65100;
+            --text-color: #333;
+            --bg-light: #f9fbf9;
+        }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); margin: 0; padding-bottom: 80px; color: var(--text-color); }
+        a { text-decoration: none; color: inherit; }
+
+        /* HEADER */
+        .page-header {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-position: center;
+            color: white; padding: 60px 20px; text-align: center;
+        }
+        .home-btn { position: absolute; top: 20px; left: 20px; color: white; font-size: 20px; z-index: 10; }
+        .page-title { font-family: 'Playfair Display', serif; font-size: 32px; margin: 0; }
+        .page-sub { font-size: 14px; opacity: 0.9; margin-top: 10px; font-style: italic; }
+
+        /* DANH SÁCH BÀI VIẾT (GRID) */
+        .blog-container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+
+        /* THẺ BÀI VIẾT */
+        .blog-card {
+            background: white; border-radius: 15px; overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s;
+            display: flex; flex-direction: column; height: 100%;
+            cursor: pointer;
+        }
+        .blog-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .blog-img { width: 100%; height: 200px; object-fit: cover; }
+        
+        .blog-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .blog-date { font-size: 12px; color: #888; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .blog-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: var(--primary-color); line-height: 1.4; }
+        .blog-summary { font-size: 14px; color: #555; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 20px; flex: 1; }
+        .read-more { color: var(--accent-color); font-weight: bold; font-size: 13px; text-transform: uppercase; }
+
+        /* LOADING */
+        #loading { text-align: center; padding: 50px; color: #888; }
+
+        /* --- MODAL (Cửa sổ đọc bài viết) --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 1000;
+            justify-content: center; align-items: center; padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: white; width: 100%; max-width: 800px; max-height: 90vh;
+            border-radius: 10px; overflow-y: auto; position: relative;
+            animation: zoomIn 0.3s ease;
+        }
+        @keyframes zoomIn { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+
+        .close-modal {
+            position: absolute; top: 15px; right: 20px; font-size: 30px;
+            color: #333; cursor: pointer; z-index: 10; transition: 0.3s;
+            background: rgba(255,255,255,0.8); width: 40px; height: 40px;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+        }
+        .close-modal:hover { background: #d32f2f; color: white; }
+
+        /* Nội dung chi tiết trong Modal */
+        .detail-header { position: relative; height: 300px; }
+        .detail-img { width: 100%; height: 100%; object-fit: cover; }
+        .detail-body { padding: 40px; }
+        .detail-title { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--primary-color); margin-bottom: 10px; }
+        .detail-date { color: #888; font-style: italic; margin-bottom: 20px; display: block; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .detail-text { font-size: 16px; line-height: 1.8; color: #333; text-align: justify; }
+        
+        /* Chỉnh ảnh trong bài viết fit đẹp */
+        .detail-text img { max-width: 100%; height: auto; border-radius: 10px; margin: 20px 0; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .detail-header { height: 200px; }
+            .detail-body { padding: 20px; }
+            .detail-title { font-size: 22px; }
+        }
+
+        /* Nút giỏ hàng nổi */
+        .floating-cart {
+            position: fixed; bottom: 20px; left: 20px;
+            width: 60px; height: 60px; background: #2e7d32;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 24px; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.4); z-index: 100;
+        }
+        .cart-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; font-size: 12px; font-weight: bold; padding: 4px 8px; border-radius: 20px; border: 2px solid white; }
+    </style>
+</head>
+<body>
+
+    <div class="page-header">
+        <a href="index.html" class="home-btn"><i class="fas fa-arrow-left"></i> Trang chủ</a>
+        <h1 class="page-title">Góc Chuyện Nghề</h1>
+        <div class="page-sub">"Mỗi món ăn là một câu chuyện văn hóa"</div>
+    </div>
+
+    <div class="blog-container">
+        <div id="loading">
+            <i class="fas fa-spinner fa-spin" style="font-size:30px; margin-bottom:10px; color:#2e7d32"></i>
+            <p>Đang tải những câu chuyện...</p>
+        </div>
+        
+        <div class="blog-grid" id="story-list">
+            </div>
+    </div>
+
+    <div class="modal-overlay" id="story-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeStory()">×</span>
+            
+            <div class="detail-header">
+                <img src="" id="m-img" class="detail-img">
+            </div>
+            
+            <div class="detail-body">
+                <h2 id="m-title" class="detail-title"></h2>
+                <span id="m-date" class="detail-date"></span>
+                <div id="m-content" class="detail-text"></div>
+                
+                <div style="text-align:center; margin-top:40px; padding-top:20px; border-top:1px solid #eee;">
+                    <p style="font-style:italic; color:#666;">Bạn muốn thưởng thức hương vị này?</p>
+                    <a href="san-pham.html" style="background:#d32f2f; color:white; padding:10px 25px; border-radius:25px; font-weight:bold; font-size:14px; display:inline-block;">Ghé Cửa Hàng Ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="gio-hang.html" class="floating-cart">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="cart-count">0</span>
+    </a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="main.js"></script>
+
+    <script>
+        // --- 1. CẤU HÌNH LINK SHEET STORIES ---
+        // ⚠️ QUAN TRỌNG: Dán link CSV của TAB "STORIES" vào đây
+        const STORY_SHEET_URL = "DÁN_LINK_CSV_CỦA_TAB_STORIES_VÀO_ĐÂY";
+
+        // Biến lưu trữ dữ liệu tạm
+        let allStories = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if(STORY_SHEET_URL.includes("DÁN_LINK")) {
+                document.getElementById('loading').innerHTML = "Chưa kết nối dữ liệu câu chuyện!";
+                return;
+            }
+
+            Papa.parse(STORY_SHEET_URL, {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    allStories = results.data;
+                    renderStories(allStories);
+                }
+            });
+        });
+
+        // --- 2. HÀM HIỂN THỊ DANH SÁCH ---
+        function renderStories(stories) {
+            const container = document.getElementById('story-list');
+            document.getElementById('loading').style.display = 'none';
+
+            // Lọc và đảo ngược để bài mới nhất lên đầu
+            let cleanData = stories.filter(item => item.id && item.title).reverse();
+
+            cleanData.forEach(item => {
+                let html = `
+                <div class="blog-card" onclick="openStory('${item.id}')">
+                    <img src="${item.image}" class="blog-img" onerror="this.src='https://via.placeholder.com/400x200'">
+                    <div class="blog-content">
+                        <span class="blog-date"><i class="far fa-clock"></i> ${item.date}</span>
+                        <h3 class="blog-title">${item.title}</h3>
+                        <p class="blog-summary">${item.summary}</p>
+                        <span class="read-more">Đọc tiếp <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        // --- 3. HÀM MỞ MODAL ĐỌC BÀI ---
+        function openStory(id) {
+            const story = allStories.find(item => item.id === id);
+            if (!story) return;
+
+            // Điền dữ liệu vào Modal
+            document.getElementById('m-img').src = story.image;
+            document.getElementById('m-title').innerText = story.title;
+            document.getElementById('m-date').innerText = "Đăng ngày: " + story.date;
+            document.getElementById('m-content').innerHTML = story.content; // Render HTML (thẻ br)
+
+            // Hiện Modal
+            const modal = document.getElementById('story-modal');
+            modal.style.display = "flex";
+            document.body.style.overflow = "hidden"; // Khóa cuộn trang chính
+        }
+
+        // --- 4. HÀM ĐÓNG MODAL ---
+        function closeStory() {
+            const modal = document.getElementById('story-modal');
+            modal.style.display = "none";
+            document.body.style.overflow = "auto"; // Mở khóa cuộn
+        }
+
+        // Đóng khi bấm ra ngoài vùng trắng
+        window.onclick = function(event) {
+            const modal = document.getElementById('story-modal');
+            if (event.target == modal) {
+                closeStory();
+            }
+        }
+    </script>
+</body>
+</html>
