@@ -1,7 +1,7 @@
 // main.js - PHIÊN BẢN V6.0 (ĐẦY ĐỦ TÍNH NĂNG LIÊN HỆ)
 
 // 1. CẤU HÌNH SỐ ĐIỆN THOẠI
-const PHONE_NUMBER = "0949161132"; // Số Zalo của bạn (Trần Hiếu Thuận)
+const PHONE_NUMBER = "0362225109"; // Số Zalo của bạn (Trần Hiếu Thuận)
 
 // --- CÁC HÀM HỖ TRỢ (CORE) ---
 
