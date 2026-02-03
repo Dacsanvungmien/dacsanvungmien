@@ -108,9 +108,9 @@
 
     <div class="category-bar">
         <div class="cat-item active" onclick="scrollToSection('all')">Tất cả</div>
-        <div class="cat-item" onclick="scrollToSection('mam-container')">Đặc Sản Mắm</div>
-        <div class="cat-item" onclick="scrollToSection('kho-container')">Các Loại Khô</div>
-        <div class="cat-item" onclick="scrollToSection('khac-container')">Đặc Sản Khác</div>
+        <div class="cat-item" onclick="scrollToSection('gao-container')">GẠO</div>
+        <div class="cat-item" onclick="scrollToSection('dacsanvungmien-container')">CÁC ĐẶC SẢN VÙNG MIỀN</div>
+        <div class="cat-item" onclick="scrollToSection('ocop-container')">SẢN PHẨM OCOP</div>
     </div>
 
     <div class="product-section">
@@ -120,19 +120,19 @@
             <p>Đang kết nối kho hàng...</p>
         </div>
 
-        <div id="mam-container" style="display:none">
-            <span class="section-label">ĐẶC SẢN MẮM</span>
-            <div class="product-grid" id="list-mam"></div>
+        <div id="gao-container" style="display:none">
+            <span class="section-label">GẠO</span>
+            <div class="product-grid" id="list-gao"></div>
         </div>
 
-        <div id="kho-container" style="display:none">
-            <span class="section-label">ĐẶC SẢN KHÔ</span>
-            <div class="product-grid" id="list-kho"></div>
+        <div id="dacsanvungmien-container" style="display:none">
+            <span class="section-label">ĐẶC SẢN VÙNG MIEN</span>
+            <div class="product-grid" id="list-dacsanvungmien"></div>
         </div>
 
-        <div id="khac-container" style="display:none">
-            <span class="section-label">ĐẶC SẢN KHÁC</span>
-            <div class="product-grid" id="list-khac"></div>
+        <div id="ocop-container" style="display:none">
+            <span class="section-label">SẢN PHẨM OCOP</span>
+            <div class="product-grid" id="list-ocop"></div>
         </div>
 
     </div>
@@ -171,9 +171,9 @@
 
         // --- 3. HÀM VẼ GIAO DIỆN ---
         function renderSheetData(products) {
-            const listMam = document.getElementById('list-mam');
-            const listKho = document.getElementById('list-kho');
-            const listKhac = document.getElementById('list-khac');
+            const listGao = document.getElementById('list-gao');
+            const listDacsanvungmien = document.getElementById('list-dacsanvungmien');
+            const listOcop = document.getElementById('list-ocop');
             
             // Ẩn loading
             document.getElementById('loading').style.display = 'none';
@@ -205,15 +205,15 @@
                 `;
 
                 // Phân loại vào đúng nhóm
-                if (item.category === 'mam') {
-                    document.getElementById('mam-container').style.display = 'block';
-                    listMam.innerHTML += html;
-                } else if (item.category === 'kho') {
-                    document.getElementById('kho-container').style.display = 'block';
-                    listKho.innerHTML += html;
+                if (item.category === 'gao') {
+                    document.getElementById('gao-container').style.display = 'block';
+                    listGao.innerHTML += html;
+                } else if (item.category === 'dacsanvungmien') {
+                    document.getElementById('dacsanvungmien-container').style.display = 'block';
+                    listDacsanvungmien.innerHTML += html;
                 } else {
-                    document.getElementById('khac-container').style.display = 'block';
-                    listKhac.innerHTML += html;
+                    document.getElementById('ocop-container').style.display = 'block';
+                    listOcop.innerHTML += html;
                 }
             });
         }
