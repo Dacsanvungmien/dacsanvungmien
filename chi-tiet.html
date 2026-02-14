@@ -4,67 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đang tải sản phẩm...</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
+        /* --- CẤU HÌNH CƠ BẢN --- */
         body { font-family: 'Montserrat', sans-serif; margin: 0; background: #f9fbf9; padding-bottom: 80px; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0; background: white; min-height: 100vh; }
         
-        /* Loading */
-        #loading { text-align: center; padding-top: 100px; }
-        #content { display: none; } /* Mặc định ẩn để chờ tải data */
+        /* --- HEADER & NÚT BACK --- */
+        .top-nav { padding: 15px; position: absolute; z-index: 10; width: 100%; box-sizing: border-box; }
+        .back-btn { 
+            background: rgba(255,255,255,0.8); width: 40px; height: 40px; border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center; 
+            color: #333; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 
-        /* Ảnh sản phẩm */
-        .detail-img { width: 100%; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        /* --- SLIDE ẢNH (CAROUSEL) --- */
+        .gallery-container { position: relative; width: 100%; padding-top: 100%; /* Khung vuông */ overflow: hidden; background: #eee; }
         
-        /* Thông tin */
-        .p-title { color: #2e7d32; font-size: 24px; margin: 0 0 10px 0; }
-        .p-price { color: #d32f2f; font-size: 22px; font-weight: bold; margin-bottom: 20px; display: block; }
-        .p-desc { line-height: 1.6; color: #555; background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .gallery-track {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            overflow-x: auto; /* Cho phép cuộn ngang */
+            scroll-snap-type: x mandatory; /* Bắt dính ảnh khi lướt */
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; /* Mượt trên iPhone */
+        }
+        /* Ẩn thanh cuộn */
+        .gallery-track::-webkit-scrollbar { display: none; }
 
-        /* Nút mua hàng */
+        .gallery-item {
+            min-width: 100%; height: 100%;
+            scroll-snap-align: center; /* Căn giữa khi thả tay */
+        }
+        .gallery-img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Nút điều hướng (Chỉ hiện trên PC) */
+        .slider-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.3); color: white; border: none;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            display: none; justify-content: center; align-items: center; z-index: 5;
+        }
+        .slider-btn:hover { background: rgba(0,0,0,0.6); }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+        
+        /* Dấu chấm tròn (Indicator) */
+        .dots-container {
+            position: absolute; bottom: 15px; left: 0; width: 100%;
+            display: flex; justify-content: center; gap: 8px; z-index: 5;
+        }
+        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: #fff; transform: scale(1.2); }
+
+        /* Hiển thị nút trên màn hình lớn */
+        @media (min-width: 768px) {
+            .slider-btn { display: flex; }
+            .container { margin: 20px auto; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        }
+
+        /* --- THÔNG TIN SẢN PHẨM --- */
+        .info-box { padding: 20px; }
+        .p-title { color: #333; font-size: 22px; margin: 0 0 10px 0; font-weight: 700; }
+        .p-price { color: #d32f2f; font-size: 24px; font-weight: bold; margin-bottom: 20px; display: block; }
+        
+        .divider { height: 10px; background: #f4f6f8; border-top: 1px solid #eee; border-bottom: 1px solid #eee; margin: 0 -20px 20px -20px; }
+
+        .p-desc { line-height: 1.6; color: #555; font-size: 15px; }
+        .p-desc img { max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0; display: block; }
+        .desc-title { font-weight: bold; font-size: 16px; margin-bottom: 10px; border-left: 4px solid #2e7d32; padding-left: 10px; color: #2e7d32; }
+
+        /* --- THANH MUA HÀNG --- */
         .fixed-bottom-bar {
             position: fixed; bottom: 0; left: 0; width: 100%; background: white;
             padding: 10px 20px; box-shadow: 0 -5px 10px rgba(0,0,0,0.05); display: flex; gap: 10px;
-            box-sizing: border-box;
+            box-sizing: border-box; z-index: 99;
         }
         .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
         .btn-cart { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
         .btn-buy { background: #d32f2f; color: white; }
-        /* --- CSS CHO ẢNH TRONG MÔ TẢ --- */
-        .p-desc img {
-            display: block;          /* Xuống dòng riêng biệt */
-            max-width: 100%;         /* Chiều ngang tối đa bằng màn hình (không bị tràn) */
-            height: auto;            /* Chiều cao tự động (không bị méo ảnh) */
-            margin: 15px auto;       /* Canh giữa và cách đoạn văn trên dưới 15px */
-            border-radius: 10px;     /* Bo góc cho đẹp */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Đổ bóng nhẹ */
-        }
+
+        /* Loading */
+        #loading { text-align: center; padding-top: 50vh; transform: translateY(-50%); }
     </style>
 </head>
 <body>
 
-    <div style="padding: 15px;">
-        <a href="san-pham.html" style="text-decoration:none; color:#333; font-weight:bold;">
-            <i class="fas fa-arrow-left"></i> Quay lại
-        </a>
+    <div class="container" id="main-content" style="display:none">
+        
+        <div class="top-nav">
+            <a href="san-pham.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        </div>
+
+        <div class="gallery-container">
+            <div class="gallery-track" id="gallery-track">
+                </div>
+            
+            <button class="slider-btn prev-btn" onclick="scrollGallery(-1)"><i class="fas fa-chevron-left"></i></button>
+            <button class="slider-btn next-btn" onclick="scrollGallery(1)"><i class="fas fa-chevron-right"></i></button>
+            
+            <div class="dots-container" id="dots-container"></div>
+        </div>
+
+        <div class="info-box">
+            <h1 id="d-name" class="p-title"></h1>
+            <span id="d-price" class="p-price"></span>
+            
+            <div class="divider"></div>
+
+            <div class="desc-title">Mô tả sản phẩm</div>
+            <div id="d-desc" class="p-desc"></div>
+        </div>
     </div>
 
     <div id="loading">
         <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#2e7d32"></i>
-        <p>Đang lấy thông tin sản phẩm...</p>
-    </div>
-
-    <div id="content" class="container">
-        <img id="d-img" src="" class="detail-img">
-        <h1 id="d-name" class="p-title"></h1>
-        <span id="d-price" class="p-price"></span>
-        
-        <div class="p-desc">
-            <h3>Mô tả sản phẩm</h3>
-            <p id="d-desc"></p>
-        </div>
+        <p>Đang tải chi tiết...</p>
     </div>
 
     <div class="fixed-bottom-bar" id="action-bar" style="display:none">
@@ -76,70 +133,78 @@
     <script src="main.js"></script>
 
     <script>
-        // --- 1. CẤU HÌNH LINK SHEET (Dán lại link CSV của bạn vào đây) ---
-        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQH7snJz3nrHMHLUz9F1NtMhbwXhKXd4EzCTSJAUMYOsoxHEc5UJ6rcW0cG4y8qF2z9H_Wy6mBJRvPJ/pub?output=csv";
+        // --- 1. DÁN LINK GOOGLE SHEET VÀO ĐÂY ---
+        const SHEET_URL = "DÁN_LINK_CSV_CỦA_BẠN_VÀO_ĐÂY";
 
-        // --- 2. LẤY ID TỪ THANH ĐỊA CHỈ (Ví dụ: ?id=kho-ca-loc) ---
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
 
-        // --- 3. TẢI DỮ LIỆU TỪ SHEET ---
         document.addEventListener('DOMContentLoaded', function() {
-            if (!productId) {
-                alert("Không tìm thấy sản phẩm!");
-                window.location.href = "san-pham.html";
-                return;
-            }
+            if (!productId) { alert("Sản phẩm không hợp lệ!"); return; }
 
             Papa.parse(SHEET_URL, {
-                download: true,
-                header: true,
-                complete: function(results) {
-                    findAndRenderProduct(results.data);
-                }
+                download: true, header: true,
+                complete: function(results) { renderProductDetail(results.data); }
             });
         });
 
-        // --- 4. TÌM VÀ HIỂN THỊ ---
-        function findAndRenderProduct(products) {
-            // Tìm dòng trong Excel có cột id trùng với productId
+        function renderProductDetail(products) {
             const product = products.find(item => item.id === productId);
+            if (!product) return;
 
-            if (!product) {
-                document.getElementById('loading').innerHTML = "Sản phẩm không tồn tại hoặc đã bị xóa.";
-                return;
-            }
+            // 1. XỬ LÝ SLIDE ẢNH (Tách chuỗi bằng dấu phẩy)
+            // Nếu người dùng nhập: "anh1.jpg, anh2.jpg" -> Tách thành mảng
+            let images = product.image.split(',').map(item => item.trim());
+            const track = document.getElementById('gallery-track');
+            const dots = document.getElementById('dots-container');
 
-            // Có dữ liệu -> Điền vào HTML
-            document.title = product.name; // Đổi tên tab trình duyệt
-            document.getElementById('d-img').src = product.image;
+            images.forEach((imgSrc, index) => {
+                // Tạo ảnh
+                if(imgSrc) {
+                    track.innerHTML += `
+                        <div class="gallery-item">
+                            <img src="${imgSrc}" class="gallery-img" onerror="this.src='https://via.placeholder.com/600'">
+                        </div>`;
+                    
+                    // Tạo dấu chấm
+                    dots.innerHTML += `<div class="dot ${index===0?'active':''}"></div>`;
+                }
+            });
+
+            // Lắng nghe sự kiện lướt để đổi màu dấu chấm
+            track.addEventListener('scroll', () => {
+                let index = Math.round(track.scrollLeft / track.clientWidth);
+                document.querySelectorAll('.dot').forEach((d, i) => {
+                    d.classList.toggle('active', i === index);
+                });
+            });
+
+            // 2. ĐIỀN THÔNG TIN CƠ BẢN
+            document.title = product.name;
             document.getElementById('d-name').innerText = product.name;
-            
             let price = Number(product.price);
             document.getElementById('d-price').innerText = price.toLocaleString('vi-VN') + 'đ';
-            
-            // Xử lý mô tả (nếu cột description trống thì hiện câu mặc định)
-            document.getElementById('d-desc').innerHTML = product.description ? product.description : "Đang cập nhật mô tả...";
+            document.getElementById('d-desc').innerHTML = product.description ? product.description : "Đang cập nhật...";
 
-            // Cấu hình nút bấm
-            document.getElementById('btn-add').onclick = function() {
-                addToCart({
-                    id: product.id,
-                    name: product.name,
-                    price: price,
-                    image: product.image,
-                    url: window.location.href // Lưu lại link hiện tại để khách quay lại
-                });
+            // 3. XỬ LÝ NÚT MUA
+            document.getElementById('btn-add').onclick = () => {
+                addToCart({ id: product.id, name: product.name, price: price, image: images[0], url: window.location.href });
             };
-
-            document.getElementById('btn-buy').onclick = function() {
+            document.getElementById('btn-buy').onclick = () => {
                 buyNow(product.name, price);
             };
 
-            // Hiện giao diện lên
+            // HIỆN GIAO DIỆN
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
+            document.getElementById('main-content').style.display = 'block';
             document.getElementById('action-bar').style.display = 'flex';
+        }
+
+        // HÀM CHUYỂN SLIDE KHI BẤM NÚT MŨI TÊN
+        function scrollGallery(direction) {
+            const track = document.getElementById('gallery-track');
+            const scrollAmount = track.clientWidth * direction;
+            track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
         }
     </script>
 </body>
