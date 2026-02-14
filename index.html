@@ -325,41 +325,49 @@
     });
 
     function renderHomeProducts(products) {
-        const container = document.getElementById('featured-list');
-        
-        // 1. Lọc dòng trống
-        let cleanData = products.filter(item => item.id && item.name);
+    const container = document.getElementById('featured-list');
+    
+    // 1. Lọc dòng trống
+    let cleanData = products.filter(item => item.id && item.name);
 
-        // 2. Đảo ngược danh sách (Lấy món mới nhập lên đầu)
-        cleanData.reverse();
+    // 2. SẮP XẾP THEO LƯỢT XEM TỪ CAO XUỐNG THẤP
+    cleanData.sort((a, b) => {
+        let viewA = Number(a.views) || 0;
+        let viewB = Number(b.views) || 0;
+        return viewB - viewA; 
+    });
 
-        // 3. Lấy 10 món đầu tiên
-        let topNew = cleanData.slice(0, 10);
+    // 3. Cắt lấy 8 hoặc 10 món cao nhất
+    let topHot = cleanData.slice(0, 10);
 
-        // 4. Xóa loading và vẽ lại
-        container.innerHTML = "";
-        
-        topNew.forEach(item => {
-            let price = Number(item.price);
-            // Link tới trang chi tiết vạn năng
-            let detailLink = `chi-tiet.html?id=${item.id}`;
+    // 4. Xóa loading và vẽ lại
+    container.innerHTML = "";
+    
+    topHot.forEach(item => {
+        let price = Number(item.price);
+        let detailLink = `chi-tiet.html?id=${item.id}`;
+        let viewCount = Number(item.views) || 0; // Lấy số view
 
-            let html = `
-            <a href="${detailLink}" class="product-card">
-                <div class="p-img-box">
-                    <img src="${item.image}" class="p-img" alt="${item.name}" onerror="this.src='https://via.placeholder.com/300'">
-                    <span class="p-new-badge">MỚI</span>
+        // Bổ sung thẻ <div class="view-count"> vào HTML
+        let html = `
+        <a href="${detailLink}" class="product-card">
+            <div class="p-img-box">
+                <img src="${item.image}" class="p-img" onerror="this.src='https://via.placeholder.com/300'">
+                <span class="p-new-badge">HOT</span>
+            </div>
+            <div class="p-info">
+                <span class="p-name">${item.name}</span>
+                <span class="p-price">${price.toLocaleString('vi-VN')}đ</span>
+                <div style="font-size: 11px; color: #888; margin-bottom: 5px;">
+                    <i class="fas fa-eye"></i> ${viewCount} lượt xem
                 </div>
-                <div class="p-info">
-                    <span class="p-name">${item.name}</span>
-                    <span class="p-price">${price.toLocaleString('vi-VN')}đ</span>
-                    <span class="p-btn">Chi tiết <i class="fas fa-arrow-right"></i></span>
-                </div>
-            </a>
-            `;
-            container.innerHTML += html;
-        });
-    }
+                <span class="p-btn">Chi tiết <i class="fas fa-arrow-right"></i></span>
+            </div>
+        </a>
+        `;
+        container.innerHTML += html;
+    });
+}
 </script>
 
 </body>
