@@ -150,6 +150,10 @@
 
         function renderProductDetail(products) {
             const product = products.find(item => item.id === productId);
+            // --- BỘ ĐẾM LƯỢT XEM NGẦM ---
+            // Thay "LINK_APPS_SCRIPT_CỦA_BẠN" bằng cái link bạn copy ở BƯỚC 2
+            const API_VIEWS = "LINK_APPS_SCRIPT_CỦA_BẠN";
+            fetch(`${API_VIEWS}?id=${productId}`, { mode: 'no-cors' });
             if (!product) return;
 
             // 1. XỬ LÝ SLIDE ẢNH (Tách chuỗi bằng dấu phẩy)
