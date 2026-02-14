@@ -152,7 +152,7 @@
             const product = products.find(item => item.id === productId);
             // --- BỘ ĐẾM LƯỢT XEM NGẦM ---
             // Thay "LINK_APPS_SCRIPT_CỦA_BẠN" bằng cái link bạn copy ở BƯỚC 2
-            const API_VIEWS = "LINK_APPS_SCRIPT_CỦA_BẠN";
+            const API_VIEWS = "https://script.google.com/macros/s/AKfycbyNyP0ZkwU0qdmkEdxu1BiacTJEhjQZl0lxsR7AaxKnWnjT7YMRb2VcQ_16rETWyM9rnA/exec";
             fetch(`${API_VIEWS}?id=${productId}`, { mode: 'no-cors' });
             if (!product) return;
 
